@@ -1,6 +1,32 @@
 package com.geecee.escapelauncher.core.data.repository
 
+data class Quote(val text: String, val author: String)
+data class MovieRecommendation(val title: String, val prompt: String)
+data class MusicRecommendation(val title: String, val prompt: String)
+
 object LocalContent {
+    
+    val parsedQuotes by lazy {
+        inspirationalQuotes.map {
+            val parts = it.split(" — ")
+            if (parts.size == 2) Quote(parts[0], parts[1]) else Quote(it, "Unknown")
+        }
+    }
+    
+    val parsedMovies by lazy {
+        movieRecommendations.map {
+            val parts = it.split(" - ")
+            if (parts.size >= 2) MovieRecommendation(parts[0], parts.drop(1).joinToString(" - ")) else MovieRecommendation(it, "")
+        }
+    }
+    
+    val parsedMusic by lazy {
+        musicRecommendations.map {
+            val parts = it.split(" - ")
+            if (parts.size >= 2) MusicRecommendation(parts[0], parts.drop(1).joinToString(" - ")) else MusicRecommendation(it, "")
+        }
+    }
+
     val curiosityQuestions = listOf(
         "Why is the sky blue?",
         "How do fish breathe under water?",
@@ -528,5 +554,190 @@ object LocalContent {
         "Young Person's Guide to the Orchestra - Benjamin Britten",
         "War Requiem - Benjamin Britten",
         "Four Sea Interludes from Peter Grimes - Benjamin Britten"
+    )
+    val inspirationalQuotes = listOf(
+        "\"And now that you don't have to be perfect, you can be good.\" — John Steinbeck",
+        "\"We are all in the gutter, but some of us are looking at the stars.\" — Oscar Wilde",
+        "\"The only way out is through.\" — Robert Frost",
+        "\"I must be a mermaid, Rango. I have no fear of depths and a great fear of shallow living.\" — Anaïs Nin",
+        "\"There is nothing to writing. All you do is sit down at a typewriter and bleed.\" — Ernest Hemingway",
+        "\"Do not swear by the moon, for she changes constantly. Then your love would also change.\" — William Shakespeare",
+        "\"I carry your heart with me (I carry it in my heart).\" — E.E. Cummings",
+        "\"If you only read the books that everyone else is reading, you can only think what everyone else is thinking.\" — Haruki Murakami",
+        "\"To love or have loved, that is enough. Ask nothing further.\" — Victor Hugo",
+        "\"A room without books is like a body without a soul.\" — Marcus Tullius Cicero",
+        "\"You can't depend on your eyes when your imagination is out of focus.\" — Mark Twain",
+        "\"It does not do to dwell on dreams and forget to live.\" — J.K. Rowling",
+        "\"Fairy tales are more than true: not because they tell us that dragons exist, but because they tell us that dragons can be beaten.\" — Neil Gaiman",
+        "\"I am no bird; and no net ensnares me: I am a free human being with an independent will.\" — Charlotte Brontë",
+        "\"The wound is the place where the Light enters you.\" — Rumi",
+        "\"What you seek is seeking you.\" — Rumi",
+        "\"Whatever happens, happens for the good; whatever is happening, is happening for the good; whatever will happen, will also happen for the good.\" — Bhagavad Gita",
+        "\"You are what your deep, driving desire is.\" — Brihadaranyaka Upanishad",
+        "\"As a man can drink water from any side of a full tank, so the skilled theologian can wrest from any scripture that which will serve his purpose.\" — Bhagavad Gita",
+        "\"The mind acts like an enemy for those who do not control it.\" — Bhagavad Gita",
+        "\"Let your life lightly dance on the edges of Time like dew on the tip of a leaf.\" — Rabindranath Tagore",
+        "\"I slept and dreamt that life was joy. I awoke and saw that life was service. I acted and behold, service was joy.\" — Rabindranath Tagore",
+        "\"Everything comes to us that belongs to us if we create the capacity to receive it.\" — Rabindranath Tagore",
+        "\"The world is the great gymnasium where we come to make ourselves strong.\" — Swami Vivekananda",
+        "\"Arise, awake, and stop not till the goal is reached.\" — Swami Vivekananda",
+        "\"Truth can be stated in a thousand different ways, yet each one can be true.\" — Swami Vivekananda",
+        "\"Do not fear the winds of adversity. Remember: a kite rises against the wind rather than with it.\" — Unknown",
+        "\"Don't let your happiness depend on something you may lose.\" — C.S. Lewis",
+        "\"The only normal people are the ones you don't know very well.\" — Alfred Adler",
+        "\"Out of suffering have emerged the strongest souls; the most massive characters are seared with scars.\" — Khalil Gibran",
+        "\"Your pain is the breaking of the shell that encloses your understanding.\" — Khalil Gibran",
+        "\"He who has a why to live for can bear almost any how.\" — Friedrich Nietzsche",
+        "\"Without music, life would be a mistake.\" — Friedrich Nietzsche",
+        "\"Life shrinks or expands in proportion to one's courage.\" — Anaïs Nin",
+        "\"We do not remember days, we remember moments.\" — Cesare Pavese",
+        "\"The mystery of human existence lies not in just staying alive, but in finding something to live for.\" — Fyodor Dostoevsky",
+        "\"It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all.\" — J.K. Rowling",
+        "\"Knowing yourself is the beginning of all wisdom.\" — Aristotle",
+        "\"No one can make you feel inferior without your consent.\" — Eleanor Roosevelt",
+        "\"I wish I could show you when you are lonely or in darkness the astonishing light of your own being.\" — Hafiz",
+        "\"Even after all this time, the sun never says to the earth, 'You owe me.'\" — Hafiz",
+        "\"The purpose of art is washing the dust of daily life off our souls.\" — Pablo Picasso",
+        "\"Art enables us to find ourselves and lose ourselves at the same time.\" — Thomas Merton",
+        "\"Poetry is when an emotion has found its thought and the thought has found words.\" — Robert Frost",
+        "\"If I read a book and it makes my whole body so cold no fire can warm me, I know that is poetry.\" — Emily Dickinson",
+        "\"You must have chaos within you to give birth to a dancing star.\" — Friedrich Nietzsche",
+        "\"Where there is love there is life.\" — Mahatma Gandhi",
+        "\"The future depends on what you do today.\" — Mahatma Gandhi",
+        "\"Happiness is when what you think, what you say, and what you do are in harmony.\" — Mahatma Gandhi",
+        "\"To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.\" — Ralph Waldo Emerson",
+        "\"Do not go where the path may lead, go instead where there is no path and leave a trail.\" — Ralph Waldo Emerson"
+    )
+    
+    val books = listOf(
+        "Thinking, Fast and Slow (Daniel Kahneman, 2011) - CAUSE: Empirical cognitive research on 20+ heuristics & biases. EFFECT: Revolutionized decision psychology and behavioral economics. ANALYSIS: System 1 (fast, intuitive) vs System 2 (slow, analytical). TAKEAWAY: Pause high-stakes decisions to engage System 2.",
+        "Sapiens (Yuval Noah Harari, 2014) - CAUSE: Cognitive, Agricultural & Scientific Revolutions. EFFECT: Enabled large-scale human cooperation via shared myths. ANALYSIS: Shared constructs like money and nations unite billions. TAKEAWAY: Shared belief systems drive human scale.",
+        "Atomic Habits (James Clear, 2018) - CAUSE: Behavioral psychology & habit loop mechanics. EFFECT: Shifted focus from goal-setting to identity-based systems. ANALYSIS: Small 1% shifts accumulate massive compound results. TAKEAWAY: Focus on systems, not outcomes.",
+        "Meditations (Marcus Aurelius, 180 CE) - CAUSE: Personal journal during Marcomannic Wars & Antonine Plague. EFFECT: Core foundation for Stoic philosophy and modern CBT. ANALYSIS: Internal framing determines emotional reality. TAKEAWAY: Control your perception, not external events.",
+        "Man's Search for Meaning (Viktor Frankl, 1946) - CAUSE: Observations during WWII concentration camp imprisonment. EFFECT: Formulated Logotherapy focused on finding purpose in hardship. ANALYSIS: Meaning provides resilience against adversity. TAKEAWAY: A clear 'why' enables enduring any 'how'."
+    )
+
+    val musicRecommendations = listOf(
+        "Bach: Goldberg Variations (Glenn Gould, 1955) - Polyphonic counterpoint requiring dual-brain hemisphere coordination.",
+        "Miles Davis: Kind of Blue (1959) - Revolutionized modern jazz arrangement. Restraint and space create emotional depth.",
+        "Beethoven: Symphony No. 9 (1824) - Composed while profoundly deaf, breaking classical symphonic form.",
+        "Ravi Shankar: Chants of India (1997) - Produced with George Harrison, meditative ragas that ground the spirit.",
+        "Hariprasad Chaurasia: Call of the Valley (1967) - Sublime bansuri flute bridging classical structure with emotional storytelling.",
+        "Chopin: Nocturnes (Arthur Rubinstein) - Melancholy, beauty, and the pure expressive power of the solo piano.",
+        "Debussy: La Mer (1905) - Impressionistic orchestration that captures the chaotic and sublime nature of the sea.",
+        "Ustad Bismillah Khan: Shehnai Vadan - The soulful, auspicious sound of the shehnai that defined generations of Indian classical music.",
+        "Mozart: Requiem in D minor (1791) - A haunting, unfinished masterpiece confronting mortality.",
+        "Ali Akbar Khan: Signature Series - The sarod master delivering complex rhythmic cycles and deep emotional resonance.",
+        "Tchaikovsky: Swan Lake (1877) - Sweeping romanticism and dramatic tension in ballet composition.",
+        "M.S. Subbulakshmi: Vishnu Sahasranamam - Carnatic vocal perfection and deep spiritual devotion.",
+        "Philip Glass: Glassworks (1982) - Minimalist repetition that trains cognitive focus and endurance.",
+        "Zakir Hussain: Making Music (1987) - Tabla brilliance blending Indian classical with jazz fusion.",
+        "Vivaldi: The Four Seasons (1725) - Baroque mastery in programmatic music, painting landscapes with sound.",
+        "Pandit Bhimsen Joshi: Raga Darbari - Khayal vocal tradition at its absolute peak, heavy and majestic.",
+        "Mahler: Symphony No. 5 (1902) - A journey from tragedy to triumph, demanding immense emotional bandwidth.",
+        "L. Subramaniam: Global Fusion (1999) - Carnatic violin crossing boundaries into global soundscapes.",
+        "Steve Reich: Music for 18 Musicians (1976) - Phase shifting and psychoacoustic effects that alter time perception.",
+        "Shivkumar Sharma: Santoor Recital - Transforming a folk instrument into a vehicle for intricate classical ragas.",
+        "Gershwin: Rhapsody in Blue (1924) - The definitive bridge between classical orchestration and jazz rhythm.",
+        "Kishori Amonkar: Raga Yaman - The Jaipur-Atrauli gharana's emotional depth and complex melodic phrasing.",
+        "Arvo Pärt: Tabula Rasa (1977) - Tintinnabuli style creating a profound sense of stillness and holy minimalism.",
+        "Lata Mangeshkar: Meera Bhajans - Immortal playback voice rendering classical devotional poetry.",
+        "John Coltrane: A Love Supreme (1965) - A four-part suite of spiritual awakening and virtuosic improvisation.",
+        "Amjad Ali Khan: Sarod Symphony - Blending Indian classical aesthetics with orchestral arrangements.",
+        "Stravinsky: The Rite of Spring (1913) - Polyrhythms and dissonance that caused a riot and changed 20th-century music.",
+        "Pt. Jasraj: Raga Malkauns - Mewati gharana vocals creating an atmosphere of deep midnight contemplation.",
+        "Satie: Gymnopédies (1888) - Ambient, ambient piano pieces that predated minimalism.",
+        "Vilayat Khan: Sitar Recital - The gayaki ang (vocal style) translated perfectly onto the sitar.",
+        "Duke Ellington: The Blanton-Webster Band (1940) - The peak of big band orchestration and swing.",
+        "Girija Devi: Thumri Collection - The queen of thumri, bringing light classical romance and longing to life.",
+        "Wagner: Tristan und Isolde (1865) - The Tristan chord that stretched tonality to its limits.",
+        "L. Shankar: Pancha Nadai Pallavi - Astounding rhythmic complexity and virtuosity on the double violin.",
+        "Brian Eno: Music for Airports (1978) - The blueprint for generative ambient music.",
+        "Kumar Gandharva: Nirguni Bhajans - Unorthodox, rebellious, and deeply spiritual vocal renditions.",
+        "Puccini: La Bohème (1896) - The apex of verismo opera, grounding grand emotion in everyday tragedy.",
+        "U. Srinivas: Mandolin Ecstasy - A prodigy adapting a Western instrument to flawless Carnatic music.",
+        "Nina Simone: Wild Is the Wind (1966) - Raw, uncompromising vocal expression crossing classical, jazz, and soul.",
+        "Pt. Nikhil Banerjee: Sitar Recital - Deeply introspective and emotionally pure Maihar gharana sitar.",
+        "Shostakovich: Symphony No. 5 (1937) - A masterful, coded critique of totalitarianism composed under threat of death.",
+        "Veena Sahasrabuddhe: Raga Bageshri - Precise, full-throated Gwalior gharana vocals.",
+        "Rachmaninoff: Piano Concerto No. 2 (1901) - A triumphant return to composition after severe depression.",
+        "Zia Mohiuddin Dagar: Rudra Veena - The ancient, resonant dhrupad style played with uncompromising patience.",
+        "Ennio Morricone: The Good, the Bad and the Ugly (1966) - Redefined the cinematic soundscape with unconventional instrumentation.",
+        "D.K. Pattammal: Carnatic Kritis - Perfect diction and rhythmic mastery in the Carnatic tradition.",
+        "Holst: The Planets (1918) - The foundation for modern epic film scoring.",
+        "Bade Ghulam Ali Khan: Raga Goonkali - The incomparable voice of the Patiala gharana.",
+        "Bill Evans: Waltz for Debby (1961) - Impressionistic, introspective jazz piano trio interplay.",
+        "T.R. Mahalingam: Flute Recital - Erratic, brilliant, and deeply emotional Carnatic flute."
+    )
+
+    val movieRecommendations = listOf(
+        "Good Will Hunting (1997) - Emotional breakthrough, vulnerability, and the importance of mentorship.",
+        "Inside Out (2015) - Cognitive psychology visualized; accepting sadness is crucial to emotional maturity.",
+        "The Truman Show (1998) - Existential awakening and the courage to step into the unknown real world.",
+        "Spirited Away (2001) - Resilience, identity loss, and navigating complex, morally ambiguous systems.",
+        "A Beautiful Mind (2001) - Managing severe mental illness while striving for intellectual greatness.",
+        "Dead Poets Society (1989) - Seizing the day, challenging conformity, and the power of humanities.",
+        "Eternal Sunshine of the Spotless Mind (2004) - The pain of memory and accepting that suffering is part of love.",
+        "Amélie (2001) - Finding joy in small details and overcoming social anxiety to connect with others.",
+        "The Shawshank Redemption (1994) - Institutionalization, hope, and the slow, persistent pursuit of freedom.",
+        "Schindler's List (1993) - The capacity for immense good within corrupt systems; moral awakening.",
+        "12 Angry Men (1957) - Critical thinking, overcoming personal bias, and the power of solitary dissent.",
+        "The Matrix (1999) - Questioning reality, systemic control, and the heavy burden of truth.",
+        "Forrest Gump (1994) - The intersection of innocence, emotional intelligence, and historical serendipity.",
+        "Arrival (2016) - Linguistic relativity, non-linear time, and accepting pain to experience profound connection.",
+        "Parasite (2019) - A masterful, tense critique of class disparity and late-stage capitalism.",
+        "The Pursuit of Happyness (2006) - Unrelenting grit, parental sacrifice, and maintaining dignity in poverty.",
+        "Interstellar (2014) - Time dilation, the survival of the species, and love as a quantifiable force.",
+        "Whiplash (2014) - The dark, obsessive cost of greatness and toxic mentorship in the arts.",
+        "Her (2013) - The evolution of consciousness, loneliness, and the nature of connection in a digital age.",
+        "Grave of the Fireflies (1988) - The devastating human cost of war and the loss of innocence.",
+        "The Social Network (2010) - Ambition, betrayal, and the irony of building a connected world while remaining isolated.",
+        "Children of Men (2006) - Finding hope and preserving humanity in a deeply cynical, collapsing society.",
+        "Blade Runner 2049 (2017) - What it means to have a soul and the search for authentic memory.",
+        "Everything Everywhere All at Once (2022) - Nihilism vs. existentialism; choosing kindness in an overwhelming multiverse.",
+        "The Godfather (1972) - The corrupting influence of power and the burden of family legacy.",
+        "Spotlight (2015) - Journalistic integrity, systemic cover-ups, and the slow, unglamorous pursuit of truth.",
+        "City of God (2002) - Cyclical violence and the struggle to escape systemic poverty in the favelas.",
+        "Pather Panchali (1955) - A deeply humanist, poetic observation of rural poverty and resilience.",
+        "Seven Samurai (1954) - Duty, class divides, and the philosophy of leadership and sacrifice.",
+        "2001: A Space Odyssey (1968) - Human evolution, artificial intelligence, and our place in the cosmos.",
+        "Before Sunrise (1995) - The transient nature of connection and the depth of spontaneous conversation.",
+        "The Elephant Man (1980) - Empathy, human dignity, and looking past monstrous exteriors.",
+        "Requiem for a Dream (2000) - A harrowing, visceral breakdown of addiction and shattered aspirations.",
+        "Pan's Labyrinth (2006) - Using fantasy to cope with the brutal realities of fascism and war.",
+        "Bicycle Thieves (1948) - Desperation, morality, and the loss of dignity in post-war society.",
+        "The Seventh Seal (1957) - Confronting mortality and the silence of God during crisis.",
+        "Tokyo Story (1953) - The quiet, inevitable generational drift and accepting the disappointments of aging.",
+        "Do the Right Thing (1989) - Racial tension, community dynamics, and the boiling point of systemic frustration.",
+        "Network (1976) - A prophetic satire on media consolidation, outrage culture, and the commodification of news.",
+        "Ikiru (1952) - Finding bureaucratic purpose and personal meaning in the face of terminal illness.",
+        "Apocalypse Now (1979) - The descent into madness, the hypocrisy of war, and the heart of darkness.",
+        "A Clockwork Orange (1971) - Free will, institutional conditioning, and the nature of violence.",
+        "The Lives of Others (2006) - State surveillance, moral compromise, and the awakening of conscience through art.",
+        "Persona (1966) - Identity merging, the masks we wear, and psychological breakdown.",
+        "Stalker (1979) - Desire, faith, and the terrifying responsibility of getting exactly what you want.",
+        "Rashomon (1950) - The subjective nature of truth, memory, and self-serving narratives.",
+        "The 400 Blows (1959) - Adolescent rebellion, neglect, and the painful transition to independence.",
+        "M (1931) - Mob justice, paranoia, and the psychology of compulsion.",
+        "Modern Times (1936) - Industrialization, the loss of humanity in labor, and resilience through humor.",
+        "Wild Strawberries (1957) - End-of-life reflection, regret, and the search for redemption and warmth."
+    )
+
+    val languages = listOf(
+        "Komorebi (Japanese) - TIMELINE: Heian Period (794–1185 CE). CAUSE: Observation of sunlight filtering through forest canopy. ANALYSIS: Cultivates transient nature appreciation and micro-attention.",
+        "Saudade (Portuguese) - TIMELINE: 15th C Age of Discovery. CAUSE: Maritime voyages stranding 100k+ sailors away from home. ANALYSIS: A melancholic nostalgia that validates emotional depth and endurance.",
+        "Ikigai (Japanese) - TIMELINE: Okinawa (World's top Blue Zone with 68/100k centenarians). CAUSE: Intersection of passion, mission, vocation & profession. ANALYSIS: Sustains life purpose and cognitive longevity."
+    )
+    
+    val financeAndEconomics = listOf(
+        "Opportunity Cost - TIMELINE: Friedrich von Wieser (1914). CAUSE: Resource & time scarcity. EFFECT: Every choice carries an implicit cost ($100 spent = $100 not invested @ 8% CAGR = $1,006 lost over 30 yrs). ANALYSIS: Evaluate trade-offs explicitly.",
+        "Compound Interest - TIMELINE: Renaissance Banking (14th C Medici). CAUSE: Reinvesting yield continuously. FORMULA: A = P(1 + r/n)^(nt). METRIC: $10,000 at 10% returns grows to $174,494 in 30 years. ANALYSIS: Time horizon multiplies value.",
+        "Sunk Cost Fallacy - TIMELINE: Concorde Project (1969–2003). CAUSE: UK & French governments investing $2.8B+ into loss-making supersonic jet. EFFECT: Persistent irrational capital allocation. ANALYSIS: Base decisions purely on future return."
+    )
+    
+    val history = listOf(
+        "The Printing Press - TIMELINE: 1440 CE (Mainz, Germany). CAUSE: Gutenberg moveable metal type. METRIC: Book output exploded from 20,000/yr to 20M+ in 50 years. EFFECT: Scientific Revolution & Protestant Reformation. ANALYSIS: Lowering distribution friction accelerates global innovation.",
+        "The Industrial Revolution - TIMELINE: 1760–1840. CAUSE: Watt steam engine (1776) efficiency gain. METRIC: Global GDP per capita increased 1,500% in 150 years. EFFECT: Mass urbanization & modern technology. ANALYSIS: Energy density shifts dictate human societal leaps.",
+        "The Enlightenment - TIMELINE: 1685–1815. CAUSE: Scientific Revolution (Newton/Galileo) challenging dogma. EFFECT: Declaration of Independence (1776) & modern constitutional republics. ANALYSIS: Reason and empirical skepticism form the basis of open societies."
     )
 }

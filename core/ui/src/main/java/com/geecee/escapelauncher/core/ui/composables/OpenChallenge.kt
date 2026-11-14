@@ -33,16 +33,29 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.geecee.escapelauncher.core.ui.R
 import com.geecee.escapelauncher.core.theme.CardContainerColor
 import com.geecee.escapelauncher.core.theme.ContentColor
 import kotlinx.coroutines.delay
 
+import android.app.usage.UsageStatsManager
+import android.content.Context
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import java.util.Calendar
+
+@android.annotation.SuppressLint("MissingPermission")
 @Composable
 fun OpenChallenge(
     haptics: HapticFeedback,
     enabled: Boolean,
+    minutesUsedToday: Int = 0,
     openApp: () -> Unit,
     goBack: () -> Unit
 ) {
@@ -86,25 +99,43 @@ fun OpenChallenge(
     }
 
     val currentText = if (stepIndex < steps.size) steps[stepIndex] else ""
+    var intentReason by rememberSaveable { mutableStateOf("") }
+    
+    val minutesUsed = minutesUsedToday
 
     if (!nextScreen) {
         Box(
             Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFFB2D8D8),
-                            Color(0xFF004C4C)
-                        ),
-                        start = Offset(0f, 0f),
-                        end = Offset(0f, Float.POSITIVE_INFINITY)
-                    )
-                )
+                .background(Color.Black.copy(alpha = 0.8f)) // Glassmorphism backdrop usually better here, but dark solid works
                 .pointerInput(Unit) {},
             contentAlignment = Alignment.Center
         ) {
-            Column {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Why are you opening this?",
+                    color = Color.White.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                OutlinedTextField(
+                    value = intentReason,
+                    onValueChange = { intentReason = it },
+                    placeholder = { Text("Just a quick check...", color = Color.White.copy(alpha = 0.4f)) },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White
+                    ),
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+                
                 AnimatedVisibility(
                     visible = showText,
                     enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
@@ -114,11 +145,23 @@ fun OpenChallenge(
                         currentText,
                         Modifier.padding(32.dp),
                         Color.White,
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 2.sp
+                        ),
                         textAlign = TextAlign.Center,
-
-                        )
+                    )
                 }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text(
+                    text = "$minutesUsed minutes used today",
+                    color = Color.White.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
                     onClick = {
@@ -127,7 +170,7 @@ fun OpenChallenge(
                         }
                         goBack()
                     },
-                    Modifier.align(Alignment.CenterHorizontally),
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp).heightIn(min = 48.dp),
                     colors = ButtonColors(
                         ContentColor,
                         CardContainerColor,

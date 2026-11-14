@@ -135,14 +135,14 @@ interface ModifiedAppsDao {
 
     @Query(
         """
-        SELECT *
+        SELECT packageId
         FROM modifiedApps
         WHERE favouritePosition IS NOT NULL
         ORDER BY favouritePosition ASC,
                  COALESCE(displayName, packageId) COLLATE NOCASE ASC
         """
     )
-    fun getFavouriteAppsInOrderFlow(): kotlinx.coroutines.flow.Flow<List<ModifiedAppEntity>>
+    fun getFavouriteAppIdsInOrderFlow(): kotlinx.coroutines.flow.Flow<List<String>>
 
     @Query(
         """
@@ -228,4 +228,8 @@ interface ModifiedAppsDao {
 data class PackageCategory(
     val packageId: String,
     val category: String?
+)
+
+data class AppPackageOnly(
+    val packageId: String
 )

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application>
+        <activity
+            android:name=".GestureSetupActivity"
+            android:exported="true"
+            android:theme="@style/Theme.EscapeLauncher">
+            <intent-filter>
+                <action android:name="com.geecee.escapelauncher.action.GESTURE_SETUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".GesturePadActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="com.geecee.escapelauncher.action.GESTURE_PAD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".GestureOverlayService"
+            android:exported="false" />
+
+        <service
+            android:name=".GestureTileService"
+            android:icon="@drawable/ic_scribble_gesture"
+            android:label="Draw"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".GestureWidgetProvider"
+            android:label="Scribble Pad"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/gesture_widget_info" />
+        </receiver>
+    </application>
+
+</manifest>

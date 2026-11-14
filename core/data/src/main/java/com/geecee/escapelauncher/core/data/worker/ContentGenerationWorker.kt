@@ -17,7 +17,6 @@ class ContentGenerationWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            generator.generateQuestionsIfNeeded()
             generator.generateMusicIfNeeded()
             Result.success()
         } catch (e: Exception) {

@@ -8,6 +8,7 @@ import android.os.UserManager
 import com.geecee.escapelauncher.core.di.ApplicationScope
 import com.geecee.escapelauncher.core.model.InstalledApp
 import com.geecee.escapelauncher.core.common.AppLogger
+import com.geecee.escapelauncher.core.domain.repository.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,9 @@ class AppsRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     @param:ApplicationScope private val scope: CoroutineScope,
     private val iconColorCache: IconColorCache,
-    private val modifiedAppsRepository: ModifiedAppsRepository
+    private val modifiedAppsRepository: ModifiedAppsRepository,
+    val iconPackManager: IconPackManager,
+    private val settingsRepository: SettingsRepository
 ) {
     private val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
     private val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
@@ -49,6 +52,16 @@ class AppsRepository @Inject constructor(
     val mainUserApps: StateFlow<List<InstalledApp>> = installedApps
         .map { apps ->
             apps.filter { it.user == Process.myUserHandle() }
+        }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+        
+    val workProfileApps: StateFlow<List<InstalledApp>> = installedApps
+        .map { apps ->
+            apps.filter { it.user != Process.myUserHandle() }
         }
         .stateIn(
             scope = scope,
@@ -73,9 +86,12 @@ class AppsRepository @Inject constructor(
     init {
         launcherApps.registerCallback(callback)
 
-        // Perform initial full load
+        // Listen for icon pack changes
         scope.launch {
-            performReload()
+            settingsRepository.iconPackPackage.collect { pack ->
+                iconPackManager.setIconPack(pack)
+                performReload()
+            }
         }
     }
 

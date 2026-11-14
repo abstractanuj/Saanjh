@@ -41,4 +41,5 @@ fun Window.configureNavBar(hide: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         isNavigationBarContrastEnforced = false
     }
+    navigationBarColor = android.graphics.Color.TRANSPARENT
 }

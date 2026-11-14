@@ -31,6 +31,15 @@ android {
         buildConfigField("String", "APP_NAME", "\"Sareprne\"")
         buildConfigField("String", "APP_FLAVOUR", "\"Unknown Flavor\"")
     }
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("release.keystore")
+            storePassword = "escape123"
+            keyAlias = "escape"
+            keyPassword = "escape123"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".dev"
@@ -39,6 +48,7 @@ android {
             buildConfigField("String", "APP_NAME", "\"Sareprne Dev\"")
         }
         release {
+            signingConfig = signingConfigs.getByName("release")
             resValue("string", "app_name", "Sareprne")
             isMinifyEnabled = true
             isShrinkResources = true
@@ -71,6 +81,9 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
+    
+    // Performance
+    implementation(libs.androidx.profileinstaller)
 
     // JSON Parsing
     implementation(libs.gson)
@@ -90,12 +103,7 @@ dependencies {
     implementation(project(":core:theme"))
     implementation(project(":core:analytics"))
     implementation(project(":core:cloudmessaging"))
-    implementation(project(":feature:homescreen"))
-    implementation(project(":feature:workapps"))
-    implementation(project(":feature:privatespace"))
-    implementation(project(":feature:securefolder"))
     implementation(project(":feature:settings"))
-    implementation(project(":feature:appslist"))
-    implementation(project(":feature:newwidgets"))
-    implementation(project(":feature:onboarding"))
+    implementation(project(":feature:gestures"))
+    implementation(project(":feature:widgets"))
 }

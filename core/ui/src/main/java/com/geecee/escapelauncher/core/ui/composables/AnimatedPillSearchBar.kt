@@ -143,7 +143,7 @@ fun AnimatedPillSearchBar(
                         color = contentColor.copy(alpha = 0.9f),
                         fontSize = 18.sp
                     ),
-                    cursorBrush = SolidColor(Color.Transparent)
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
                 )
             }
 
@@ -152,6 +152,7 @@ fun AnimatedPillSearchBar(
                     onClick = {
                         textFieldValue = TextFieldValue("")
                         onSearchTextChanged("")
+                        keyboardController?.hide()
                     },
                     modifier = Modifier.size(24.dp)
                 ) {

@@ -25,6 +25,7 @@ class MediaManager @Inject constructor(
     val mediaState: StateFlow<MediaState> = _mediaState.asStateFlow()
 
     private val supportedPackages = setOf(
+        "com.sareprne.jukebox.debug",
         "app.rvx.android.apps.youtube.music",
         "com.google.android.apps.youtube.music",
         "de.danoeh.antennapod"

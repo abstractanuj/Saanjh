@@ -8,7 +8,6 @@ interface ModifiedAppsRepository {
 
     fun getChallengePackageIdsFlow(): Flow<List<String>>
 
-    fun getFavouriteAppsInOrderFlow(): Flow<List<ModifiedAppEntity>>
     suspend fun getByPackageId(packageId: String): ModifiedAppEntity?
 
     suspend fun setDisplayName(packageId: String, displayName: String?)

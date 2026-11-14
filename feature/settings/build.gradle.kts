@@ -8,8 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:homescreen"))
-    implementation(project(":feature:newwidgets"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
@@ -21,4 +19,8 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

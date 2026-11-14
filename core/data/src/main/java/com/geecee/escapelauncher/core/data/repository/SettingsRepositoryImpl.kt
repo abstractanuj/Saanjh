@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
@@ -36,6 +37,10 @@ class SettingsRepositoryImpl @Inject constructor(
             twelveHourClock = preferences[PreferencesKeys.TWELVE_HOUR_CLOCK] ?: false,
             bigClock = preferences[PreferencesKeys.BIG_CLOCK] ?: false,
             showDate = preferences[PreferencesKeys.SHOW_DATE] ?: false,
+            showGlassmorphicReminders = preferences[PreferencesKeys.SHOW_GLASSMORPHIC_REMINDERS] ?: true,
+            reminderFrequencyHours = preferences[PreferencesKeys.REMINDER_FREQUENCY_HOURS] ?: 1,
+            reminderStartTime = preferences[PreferencesKeys.REMINDER_START_TIME] ?: "08:00",
+            reminderEndTime = preferences[PreferencesKeys.REMINDER_END_TIME] ?: "22:00",
             homeAlignment = preferences[PreferencesKeys.HOME_ALIGNMENT] ?: "Center",
             homeVAlignment = preferences[PreferencesKeys.HOME_V_ALIGNMENT] ?: "Center",
             appsAlignment = preferences[PreferencesKeys.APPS_ALIGNMENT] ?: "Center",
@@ -76,6 +81,23 @@ class SettingsRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 emptyList()
             }
+            ,
+            routineAppsMorning = preferences[PreferencesKeys.ROUTINE_APPS_MORNING] ?: emptySet(),
+            routineAppsAfternoon = preferences[PreferencesKeys.ROUTINE_APPS_AFTERNOON] ?: emptySet(),
+            routineAppsEvening = preferences[PreferencesKeys.ROUTINE_APPS_EVENING] ?: emptySet(),
+            routineAppsNight = preferences[PreferencesKeys.ROUTINE_APPS_NIGHT] ?: emptySet(),
+            folderGridSize = preferences[PreferencesKeys.FOLDER_GRID_SIZE] ?: 3,
+            folderBackgroundOpacity = preferences[PreferencesKeys.FOLDER_BACKGROUND_OPACITY] ?: 0.8f,
+            enableHistoryRecommendations = preferences[PreferencesKeys.ENABLE_HISTORY_RECOMMENDATIONS] ?: true,
+            enableEconomicsRecommendations = preferences[PreferencesKeys.ENABLE_ECONOMICS_RECOMMENDATIONS] ?: true,
+            enablePsychologyRecommendations = preferences[PreferencesKeys.ENABLE_PSYCHOLOGY_RECOMMENDATIONS] ?: true,
+            enableSociologyRecommendations = preferences[PreferencesKeys.ENABLE_SOCIOLOGY_RECOMMENDATIONS] ?: true,
+            enableWhatIfRecommendations = preferences[PreferencesKeys.ENABLE_WHAT_IF_RECOMMENDATIONS] ?: true,
+            enableForeignMoviesRecommendations = preferences[PreferencesKeys.ENABLE_FOREIGN_MOVIES_RECOMMENDATIONS] ?: true,
+            recommendationFrequencyHours = preferences[PreferencesKeys.RECOMMENDATION_FREQUENCY_HOURS] ?: 24,
+            recommendationTime = preferences[PreferencesKeys.RECOMMENDATION_TIME] ?: "10:00",
+            enableSystemWallpaper = preferences[PreferencesKeys.ENABLE_SYSTEM_WALLPAPER] ?: false,
+            iconPackPackage = preferences[PreferencesKeys.ICON_PACK_PACKAGE]
         )
     }.shareIn(
         scope = scope,
@@ -172,6 +194,16 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setMaxQuickApps(value: Int) {
         dataStore.edit { preferences -> preferences[PreferencesKeys.MAX_QUICK_APPS] = value }
+    }
+    
+    override val iconPackPackage: Flow<String?>
+        get() = settings.map { it.iconPackPackage }.distinctUntilChanged()
+
+    override suspend fun setIconPackPackage(pkg: String?) {
+        dataStore.edit { preferences -> 
+            if (pkg == null) preferences.remove(PreferencesKeys.ICON_PACK_PACKAGE)
+            else preferences[PreferencesKeys.ICON_PACK_PACKAGE] = pkg
+        }
     }
 
     override val appsAlignment: Flow<String>
@@ -343,6 +375,34 @@ class SettingsRepositoryImpl @Inject constructor(
         }
     }
 
+    override val routineAppsMorning: Flow<Set<String>>
+        get() = settings.map { it.routineAppsMorning }.distinctUntilChanged()
+
+    override suspend fun setRoutineAppsMorning(apps: Set<String>) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.ROUTINE_APPS_MORNING] = apps }
+    }
+
+    override val routineAppsAfternoon: Flow<Set<String>>
+        get() = settings.map { it.routineAppsAfternoon }.distinctUntilChanged()
+
+    override suspend fun setRoutineAppsAfternoon(apps: Set<String>) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.ROUTINE_APPS_AFTERNOON] = apps }
+    }
+
+    override val routineAppsEvening: Flow<Set<String>>
+        get() = settings.map { it.routineAppsEvening }.distinctUntilChanged()
+
+    override suspend fun setRoutineAppsEvening(apps: Set<String>) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.ROUTINE_APPS_EVENING] = apps }
+    }
+
+    override val routineAppsNight: Flow<Set<String>>
+        get() = settings.map { it.routineAppsNight }.distinctUntilChanged()
+
+    override suspend fun setRoutineAppsNight(apps: Set<String>) {
+        dataStore.edit { preferences -> preferences[PreferencesKeys.ROUTINE_APPS_NIGHT] = apps }
+    }
+
     override suspend fun updateSettings(settings: SettingsData) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.HAPTIC_FEEDBACK] = settings.hapticFeedBackEnabled
@@ -350,6 +410,10 @@ class SettingsRepositoryImpl @Inject constructor(
             preferences[PreferencesKeys.TWELVE_HOUR_CLOCK] = settings.twelveHourClock
             preferences[PreferencesKeys.BIG_CLOCK] = settings.bigClock
             preferences[PreferencesKeys.SHOW_DATE] = settings.showDate
+            preferences[PreferencesKeys.SHOW_GLASSMORPHIC_REMINDERS] = settings.showGlassmorphicReminders
+            preferences[PreferencesKeys.REMINDER_FREQUENCY_HOURS] = settings.reminderFrequencyHours
+            preferences[PreferencesKeys.REMINDER_START_TIME] = settings.reminderStartTime
+            preferences[PreferencesKeys.REMINDER_END_TIME] = settings.reminderEndTime
             preferences[PreferencesKeys.HOME_ALIGNMENT] = settings.homeAlignment
             preferences[PreferencesKeys.HOME_V_ALIGNMENT] = settings.homeVAlignment
             preferences[PreferencesKeys.APPS_ALIGNMENT] = settings.appsAlignment
@@ -385,6 +449,26 @@ class SettingsRepositoryImpl @Inject constructor(
                 preferences[PreferencesKeys.PEOPLE_PAGE_BACKGROUND_URI] = backgroundUri
             }
             preferences[PreferencesKeys.CUSTOM_YOUTUBE_CHANNELS] = gson.toJson(settings.customYoutubeChannels)
+            preferences[PreferencesKeys.ROUTINE_APPS_MORNING] = settings.routineAppsMorning
+            preferences[PreferencesKeys.ROUTINE_APPS_AFTERNOON] = settings.routineAppsAfternoon
+            preferences[PreferencesKeys.ROUTINE_APPS_EVENING] = settings.routineAppsEvening
+            preferences[PreferencesKeys.ROUTINE_APPS_NIGHT] = settings.routineAppsNight
+            preferences[PreferencesKeys.FOLDER_GRID_SIZE] = settings.folderGridSize
+            preferences[PreferencesKeys.FOLDER_BACKGROUND_OPACITY] = settings.folderBackgroundOpacity
+            preferences[PreferencesKeys.ENABLE_HISTORY_RECOMMENDATIONS] = settings.enableHistoryRecommendations
+            preferences[PreferencesKeys.ENABLE_ECONOMICS_RECOMMENDATIONS] = settings.enableEconomicsRecommendations
+            preferences[PreferencesKeys.ENABLE_PSYCHOLOGY_RECOMMENDATIONS] = settings.enablePsychologyRecommendations
+            preferences[PreferencesKeys.ENABLE_SOCIOLOGY_RECOMMENDATIONS] = settings.enableSociologyRecommendations
+            preferences[PreferencesKeys.ENABLE_WHAT_IF_RECOMMENDATIONS] = settings.enableWhatIfRecommendations
+            preferences[PreferencesKeys.ENABLE_FOREIGN_MOVIES_RECOMMENDATIONS] = settings.enableForeignMoviesRecommendations
+            preferences[PreferencesKeys.RECOMMENDATION_FREQUENCY_HOURS] = settings.recommendationFrequencyHours
+            preferences[PreferencesKeys.RECOMMENDATION_TIME] = settings.recommendationTime
+            val pkg = settings.iconPackPackage
+            if (pkg == null) preferences.remove(PreferencesKeys.ICON_PACK_PACKAGE) else preferences[PreferencesKeys.ICON_PACK_PACKAGE] = pkg
         }
+    }
+
+    suspend fun getSettingsData(): SettingsData {
+        return settings.first()
     }
 }

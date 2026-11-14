@@ -67,6 +67,6 @@ fun CuriositySection(
 @Composable
 fun CuriositySectionPreview() {
     MaterialTheme {
-        CuriositySection(content = CuriosityContent.Question("why is the sky blue?"))
+        CuriositySection(content = CuriosityContent.Question("How do dolphins jump so high?"))
     }
 }

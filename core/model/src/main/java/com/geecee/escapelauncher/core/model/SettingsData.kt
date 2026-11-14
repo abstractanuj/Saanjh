@@ -11,11 +11,16 @@ data class SettingsData(
     val twelveHourClock: Boolean = false,
     val bigClock: Boolean = false,
     val showDate: Boolean = false,
+    val showGlassmorphicReminders: Boolean = true,
+    val reminderFrequencyHours: Int = 1,
+    val reminderStartTime: String = "08:00",
+    val reminderEndTime: String = "22:00",
     val homeAlignment: String = "Center",
     val homeVAlignment: String = "Center",
     val appsAlignment: String = "Center",
     val font: String = "Jost",
     val peoplePageBackgroundUri: String? = null,
+    val iconPackPackage: String? = null,
     // endregion
 
     // region Search Settings
@@ -26,7 +31,24 @@ data class SettingsData(
     val showHiddenAppsInSearch: Boolean = false,
     // endregion
 
+    // region Folder Settings
+    val folderGridSize: Int = 3,
+    val folderBackgroundOpacity: Float = 0.8f,
+    // endregion
+
+    // region Recommendation Settings
+    val enableHistoryRecommendations: Boolean = true,
+    val enableEconomicsRecommendations: Boolean = true,
+    val enablePsychologyRecommendations: Boolean = true,
+    val enableSociologyRecommendations: Boolean = true,
+    val enableWhatIfRecommendations: Boolean = true,
+    val enableForeignMoviesRecommendations: Boolean = true,
+    val recommendationFrequencyHours: Int = 24,
+    val recommendationTime: String = "10:00",
+    // endregion
+
     // region Theme Settings
+    val enableSystemWallpaper: Boolean = false,
     val theme: Int = 11,
     val ltheme: Int = 11,
     val dtheme: Int = 11,
@@ -45,6 +67,10 @@ data class SettingsData(
     val gestureNavigation: Boolean = false,
     val enableNowPlaying: Boolean = false,
     val showLauncherSwitcherNotification: Boolean = false,
+    val routineAppsMorning: Set<String> = emptySet(),
+    val routineAppsAfternoon: Set<String> = emptySet(),
+    val routineAppsEvening: Set<String> = emptySet(),
+    val routineAppsNight: Set<String> = emptySet(),
     // endregion
 
     // region Experimental & Others

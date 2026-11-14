@@ -45,17 +45,23 @@ object AppClassifier {
         "com.google.android.videos"
     )
 
-    private val productivityPackages = setOf(
-        "com.google.android.apps.docs",
-        "com.google.android.apps.sheets",
-        "com.google.android.apps.slides",
-        "com.microsoft.office.word",
-        "com.microsoft.office.excel",
-        "com.microsoft.office.powerpoint",
-        "com.google.android.gm", // Gmail
-        "com.microsoft.office.outlook",
-        "com.slack",
-        "com.zoom.videomeetings"
+    private val gamesPackages = setOf(
+        "com.kiloo.subwaysurf",
+        "com.roblox.client",
+        "com.mojang.minecraftpe",
+        "com.supercell.clashofclans",
+        "com.activision.callofduty.shooter",
+        "com.tencent.ig",
+        "com.nianticlabs.pokemongo"
+    )
+
+    private val wellbeingPackages = setOf(
+        "com.google.android.apps.wellbeing",
+        "com.getsomeheadspace.android",
+        "com.calm.android",
+        "com.fitnesskeeper.runkeeper.pro",
+        "com.myfitnesspal.android",
+        "com.strava"
     )
 
     private val financePackages = setOf(
@@ -67,18 +73,7 @@ object AppClassifier {
         "com.etoro.openbook"
     )
 
-    private val toolsPackages = setOf(
-        "com.android.chrome",
-        "org.mozilla.firefox",
-        "com.google.android.apps.authenticator2",
-        "com.lastpass.lpandroid",
-        "com.onepassword.android",
-        "com.android.settings",
-        "com.google.android.calculator",
-        "com.google.android.calendar"
-    )
-
-    fun classify(packageName: String, manualOverrides: Map<String, String> = emptyMap()): AppCategory {
+    fun classify(packageName: String, manualOverrides: Map<String, String> = emptyMap()): AppCategory? {
         // 1. Check for manual overrides first
         manualOverrides[packageName]?.let { manualCategoryName ->
             return AppCategory.fromString(manualCategoryName)
@@ -89,10 +84,10 @@ object AppClassifier {
             travelPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.TRAVEL
             socialPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.SOCIAL
             entertainmentPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.ENTERTAINMENT
-            productivityPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.PRODUCTIVITY
+            gamesPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.GAMES
+            wellbeingPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.WELLBEING
             financePackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.FINANCE
-            toolsPackages.any { packageName.contains(it, ignoreCase = true) } -> AppCategory.TOOLS
-            else -> AppCategory.OTHERS
+            else -> null
         }
     }
 }

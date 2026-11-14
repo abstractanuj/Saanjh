@@ -2,6 +2,7 @@ package com.geecee.escapelauncher
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
@@ -11,7 +12,9 @@ class LauncherTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
         qsTile?.let { tile ->
-            tile.state = Tile.STATE_INACTIVE
+            // Update tile state based on whether we are the default launcher
+            val isDefault = isDefaultLauncher()
+            tile.state = if (isDefault) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
             tile.updateTile()
         }
     }
@@ -19,14 +22,16 @@ class LauncherTileService : TileService() {
     override fun onClick() {
         super.onClick()
 
-        val intent = Intent(this, LauncherSwitcherActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+        // We launch our invisible LauncherSwitcherActivity which attempts to use RoleManager to 
+        // show the system popup, and if that fails, it falls back to the Settings screen.
+        val targetIntent = Intent(this, LauncherSwitcherActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
-            intent,
+            targetIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -35,7 +40,13 @@ class LauncherTileService : TileService() {
             startActivityAndCollapse(pendingIntent)
         } else {
             @Suppress("DEPRECATION")
-            startActivityAndCollapse(intent)
+            startActivityAndCollapse(targetIntent)
         }
+    }
+
+    private fun isDefaultLauncher(): Boolean {
+        val intent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_HOME) }
+        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        return resolveInfo?.activityInfo?.packageName == packageName
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item component="ComponentInfo{com.whatsapp/com.whatsapp.Main}" drawable="icon_dot_1" />
+    <item component="ComponentInfo{com.google.android.youtube/com.google.android.youtube.app.honeycomb.Shell$HomeActivity}" drawable="icon_dot_2" />
+    <item component="ComponentInfo{com.instagram.android/com.instagram.mainactivity.MainActivity}" drawable="icon_dot_3" />
+    <item component="ComponentInfo{com.google.android.gm/com.google.android.gm.ConversationListActivityGmail}" drawable="icon_dot_1" />
+    <item component="ComponentInfo{com.google.android.apps.messaging/com.google.android.apps.messaging.ui.ConversationListActivity}" drawable="icon_dot_2" />
+    <item component="ComponentInfo{com.android.chrome/com.google.android.apps.chrome.Main}" drawable="icon_dot_3" />
+
+    <!-- This is a fallback definition for stock launchers supporting icon packs. -->
+</resources>

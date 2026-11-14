@@ -57,7 +57,7 @@ fun SettingsSingleChoiceSegmentedButtons(
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodyMedium, // Celebrate Typography
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
@@ -105,63 +105,48 @@ fun SettingsSlider(
     steps: Int,
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
-    isTopOfGroup: Boolean = false,
-    isBottomOfGroup: Boolean = false,
+    isTopOfGroup: Boolean = false, // Kept for compatibility
+    isBottomOfGroup: Boolean = false, // Kept for compatibility
     resetButtonContentDescription: String
 ) {
-    val groupEdgeCornerRadius = 24.dp
-    val defaultCornerRadius = 8.dp
-
-    val topStartRadius = if (isTopOfGroup) groupEdgeCornerRadius else defaultCornerRadius
-    val topEndRadius = if (isTopOfGroup) groupEdgeCornerRadius else defaultCornerRadius
-    val bottomStartRadius = if (isBottomOfGroup) groupEdgeCornerRadius else defaultCornerRadius
-    val bottomEndRadius = if (isBottomOfGroup) groupEdgeCornerRadius else defaultCornerRadius
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 1.dp),
-        shape = RoundedCornerShape(
-            topStart = topStartRadius,
-            topEnd = topEndRadius,
-            bottomStart = bottomStartRadius,
-            bottomEnd = bottomEndRadius
-        ), colors = CardDefaults.cardColors(
-            containerColor = CardContainerColor,
-            contentColor = ContentColor
-        )
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = Color.Transparent
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
-            AutoResizingText(
-                text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f)
-            )
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium, // Celebrate Typography
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = resetButtonContentDescription,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(start = 8.dp)
+                        .clickable(onClick = onReset),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
             Slider(
                 value = value,
                 onValueChange = onValueChange,
                 valueRange = valueRange,
                 steps = steps,
                 modifier = Modifier
-                    .weight(1.5f)
-                    .padding(horizontal = 16.dp)
-            )
-
-            Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = resetButtonContentDescription,
-                modifier = Modifier
-                    .size(40.dp)
-                    .padding(start = 8.dp)
-                    .clickable(onClick = onReset),
-                tint = ContentColor,
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
             )
         }
     }

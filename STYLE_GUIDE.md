@@ -20,6 +20,7 @@ Thank you for your interest in contributing! This guide covers code style, archi
 - [Build flavours](#build-flavours)
 - [Testing](#testing)
 - [Things to avoid](#things-to-avoid)
+- [Design principles](#design-principles)
 
 ## Project structure
 
@@ -307,3 +308,49 @@ analyticsProxy.logCustomKey("event", "app_opened")
 **Suppressing instead of fixing.** If the compiler or lint is warning you about something, treat it as useful information. Remove unused code, fix nullability issues, and resolve deprecation warnings rather than suppressing them.
 
 **Giant single-responsibility violations.** `Settings.kt` is the main example. When adding features, resist the pull toward the nearest large file — create a new one instead.
+
+## Design principles
+
+Escape Launcher is inspired by Metro design principles. Keep these in mind when designing UI and adding features:
+
+### AUTHENTICALLY DIGITAL
+- Design for the Form Factor
+- Don't Try to be What It's NOT
+- Be Direct
+
+### CONTENT, NOT CHROME
+- Delight through Content Instead of Decoration
+- Reduce Visuals that are Not Content
+- Content is the UI
+- Direct Interaction with the Content
+
+### ALIVE IN MOTION
+- Feels Responsive and Alive
+- Creates a System
+- Gives Context to Improve Usability
+- Transition Between UI is as Important as the Design of the UI
+- Adds Dimension and Depth
+
+### CELEBRATE TYPOGRAPHY
+- Type is Beautiful, Not Just Legible
+- Clear, Straightforward Information Design
+- Uncompromising Sensitivity to Weight, Balance and Scale
+
+### CLEAN, LIGHT, OPEN, FAST
+- Feels Fast and Responsive
+- Focus on Primary Tasks
+- Do a Lot with Very Little
+- Fierce Reduction of Unnecessary Elements
+- Delightful Use of Whitespace
+- Full Bleed Canvas
+
+### PERSONAL, RELEVANT, CONNECTED
+- Focuses on the Individual and their Tasks
+- Helps Organize Information and Applications
+
+### Other principles
+- **Make it easy to use:** Familiar = easy to use. Provide consistent and predictable experience.
+- **Be inspired by Metro...:** but look for balance between the Metro principles and your own style.
+- **Use Colour to...:** delight the user, personalize the experience and emphasize hierarchy.
+- **Use Typography...:** pay attention to balance, weight & scale.
+- **Use motion to delight the user but...:** Remember that pacing is important: the more you use it, the less special it becomes.

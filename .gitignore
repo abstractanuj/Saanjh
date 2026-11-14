@@ -1,51 +1,35 @@
-# Gradle and Build artifacts
+# Gradle files
 .gradle/
 build/
-*/build/
+.kotlin/
+
+# Local configuration file (sdk path, etc)
 local.properties
 
-# Android specific
-*.iml
-*.apk
-*.ap_
-*.dex
-*.class
-bin/
-gen/
+# Log/OS Files
+*.log
+
+# Android Studio generated files and folders
 captures/
 .externalNativeBuild/
 .cxx/
-app/prod/release/
-crash-reports/
-.kotlin/
+*.aab
+*.apk
+output-metadata.json
 
-# IDE - IntelliJ / Android Studio
-.idea/*
-!.idea/icon.svg
-*.iws
-*.ipr
-*.ids
-out/
-.fleet/
-.vs/
+# IntelliJ
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
 
-# System / OS
-.DS_Store
-Thumbs.db
-
-# Secrets and Configs
-google-services.json
-mock-google-services.json
-fabric.properties
-*-key.jks
+# Keystore files
+*.jks
 *.keystore
-!debug.keystore
 
-# Temporary / Log files
-*.log
-*.temp
-*.tmp
+# Google Services (e.g. APIs or Firebase)
+google-services.json
 
-# AI
-.artifacts
-graphify-out/
+# Android Profiling
+*.hprof

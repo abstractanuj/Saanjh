@@ -5,14 +5,15 @@ package com.geecee.escapelauncher.core.theme
 import androidx.compose.ui.graphics.Color
 
 val pitchBlackBackground = Color(0, 0, 0)
-val transparentHalf = Color(
-    0,
-    0,
-    0,
-    150
-) // Used in the private space settings dialog to differ it from the background
+val transparentHalf = Color(0, 0, 0, 150) // Used in the private space settings dialog to differ it from the background
 val escapeRed = Color(172, 43, 43)
 val escapeGreen = Color(43, 172, 61)
+
+// Glassmorphism tokens
+val GlassWhite = Color(0x33FFFFFF)
+val GlassWhiteBorder = Color(0x66FFFFFF)
+val GlassDark = Color(0x33000000)
+val GlassDarkBorder = Color(0x66000000)
 
 val primaryLight = Color(0xFF070808)
 val onPrimaryLight = Color(0xFFFFFFFF)

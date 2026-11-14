@@ -38,26 +38,21 @@ fun SettingsGroup(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp)
+            .padding(vertical = 16.dp) // Delightful Use of Whitespace
     ) {
         if (title != null) {
             Text(
-                text = title.uppercase(),
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.5.sp
+                text = title, // Content, Not Chrome: Use regular casing and typography hierarchy
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Normal,
+                    letterSpacing = 0.sp
                 ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
             )
         }
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerLow,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(content = content)
-        }
+        // Removed unnecessary Surface and background for "Full Bleed Canvas" and "Fierce Reduction of Unnecessary Elements"
+        Column(content = content)
     }
 }
 
@@ -66,10 +61,11 @@ fun SettingsGroup(
  */
 @Composable
 fun SettingsDivider() {
+    // "Clean, Light, Open, Fast" - optional separator without heavy margins
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 24.dp),
-        thickness = 0.5.dp,
-        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
     )
 }
 
@@ -82,6 +78,7 @@ fun SettingsSwitch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    description: String? = null,
     isTopOfGroup: Boolean = false, // Kept for compatibility
     isBottomOfGroup: Boolean = false // Kept for compatibility
 ) {
@@ -97,12 +94,21 @@ fun SettingsSwitch(
                 .defaultMinSize(minHeight = 48.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = label,
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (description != null) {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+            }
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
@@ -169,6 +175,7 @@ fun SettingsNavigationItem(
 
 /**
  * Designer-styled text field for use within a SettingsGroup.
+ * Adheres to "Celebrate Typography" with large, clear text.
  */
 @Composable
 fun SettingsTextField(
@@ -186,7 +193,7 @@ fun SettingsTextField(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodyMedium, // Celebrate Typography
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
         )
@@ -194,13 +201,13 @@ fun SettingsTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Light), // Celebrate Typography
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
                 disabledContainerColor = Color.Transparent,
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.outlineVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
             ),
             singleLine = true
         )

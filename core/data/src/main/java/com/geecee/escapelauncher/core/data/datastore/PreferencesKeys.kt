@@ -4,6 +4,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 
 object PreferencesKeys {
     val ALLOW_ANALYTICS = booleanPreferencesKey(name = "allow_analytics")
@@ -15,6 +17,10 @@ object PreferencesKeys {
     val TWELVE_HOUR_CLOCK = booleanPreferencesKey(name = "twelve_hour_clock")
     val BIG_CLOCK = booleanPreferencesKey(name = "big_clock")
     val SHOW_DATE = booleanPreferencesKey(name = "show_date")
+    val SHOW_GLASSMORPHIC_REMINDERS = booleanPreferencesKey(name = "show_glassmorphic_reminders")
+    val REMINDER_FREQUENCY_HOURS = intPreferencesKey(name = "reminder_frequency_hours")
+    val REMINDER_START_TIME = stringPreferencesKey(name = "reminder_start_time")
+    val REMINDER_END_TIME = stringPreferencesKey(name = "reminder_end_time")
     val FIRST_TIME_HELP = booleanPreferencesKey(name = "first_time_help")
     val HOME_V_ALIGNMENT = stringPreferencesKey(name = "home_v_alignment")
     val HOME_ALIGNMENT = stringPreferencesKey(name = "home_alignment")
@@ -63,4 +69,24 @@ object PreferencesKeys {
     val WEATHER_APP_PACKAGE = stringPreferencesKey(name = "weather_app_package")
     val PEOPLE_PAGE_BACKGROUND_URI = stringPreferencesKey(name = "people_page_background_uri")
     val CUSTOM_YOUTUBE_CHANNELS = stringPreferencesKey(name = "custom_youtube_channels")
+    val ROUTINE_APPS_MORNING = stringSetPreferencesKey(name = "routine_apps_morning")
+    val ROUTINE_APPS_AFTERNOON = stringSetPreferencesKey(name = "routine_apps_afternoon")
+    val ROUTINE_APPS_EVENING = stringSetPreferencesKey(name = "routine_apps_evening")
+    val ROUTINE_APPS_NIGHT = stringSetPreferencesKey(name = "routine_apps_night")
+
+    // Folders
+    val FOLDER_GRID_SIZE = intPreferencesKey(name = "folder_grid_size")
+    val FOLDER_BACKGROUND_OPACITY = floatPreferencesKey(name = "folder_background_opacity")
+
+    // Recommendations
+    val ENABLE_HISTORY_RECOMMENDATIONS = booleanPreferencesKey(name = "enable_history_recommendations")
+    val ENABLE_SYSTEM_WALLPAPER = booleanPreferencesKey(name = "enable_system_wallpaper")
+    val ENABLE_ECONOMICS_RECOMMENDATIONS = booleanPreferencesKey(name = "enable_economics_recommendations")
+    val ENABLE_PSYCHOLOGY_RECOMMENDATIONS = booleanPreferencesKey(name = "enable_psychology_recommendations")
+    val ENABLE_SOCIOLOGY_RECOMMENDATIONS = booleanPreferencesKey(name = "enable_sociology_recommendations")
+    val ENABLE_WHAT_IF_RECOMMENDATIONS = booleanPreferencesKey(name = "enable_what_if_recommendations")
+    val ENABLE_FOREIGN_MOVIES_RECOMMENDATIONS = booleanPreferencesKey(name = "enable_foreign_movies_recommendations")
+    val RECOMMENDATION_FREQUENCY_HOURS = intPreferencesKey(name = "recommendation_frequency_hours")
+    val RECOMMENDATION_TIME = stringPreferencesKey(name = "recommendation_time")
+    val ICON_PACK_PACKAGE = stringPreferencesKey(name = "icon_pack_package")
 }

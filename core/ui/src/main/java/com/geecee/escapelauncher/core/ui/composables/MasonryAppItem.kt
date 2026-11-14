@@ -34,6 +34,8 @@ import androidx.core.graphics.ColorUtils
 
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
 
 /**
  * Tile sizes for the bento/rigid grid
@@ -111,10 +113,28 @@ fun MasonryAppItem(
             AsyncImage(
                 model = imageUri,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                alpha = 0.8f
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp) // Leave a small padding for card boundary
+                    .alpha(0.85f),
+                contentScale = ContentScale.Fit, // Make sure icon doesn't get cropped
             )
+        } else {
+             // Fallback for non-aesthetic icons or missing images
+             val fallbackUrl = remember(appName) {
+                 val seed = appName.hashCode()
+                 val categories = listOf("nature", "space", "galaxy", "planets", "forest", "animals", "stars", "trees")
+                 val category = categories[kotlin.math.abs(seed) % categories.size]
+                 "https://loremflickr.com/320/320/$category?lock=${kotlin.math.abs(seed) % 100}"
+             }
+             AsyncImage(
+                 model = fallbackUrl,
+                 contentDescription = appName,
+                 modifier = Modifier
+                     .fillMaxSize()
+                     .alpha(0.6f),
+                 contentScale = ContentScale.Crop
+             )
         }
 
         // App name in the bottom-left corner with auto-resizing

@@ -1,5 +1,9 @@
 <resources>
     <style name="Theme.EscapeLauncher" parent="Theme.AppCompat.NoActionBar">
+        <!-- Show system wallpaper behind the app -->
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
     <style name="Theme.EscapeLauncher.Splash" parent="Theme.SplashScreen">
@@ -7,5 +11,14 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/square_icon</item>
         <item name="windowSplashScreenAnimationDuration">500</item>
         <item name="postSplashScreenTheme">@style/Theme.EscapeLauncher</item>
+    </style>
+
+    <style name="Theme.EscapeLauncher.Transparent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

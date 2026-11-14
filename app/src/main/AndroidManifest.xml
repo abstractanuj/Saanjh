@@ -28,6 +28,7 @@
 
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".EscapeApplication"
@@ -43,21 +44,73 @@
         tools:targetApi="tiramisu">
 
         <activity
-            android:name=".MainHomeScreenActivity"
-            android:exported="true"
-            android:theme="@style/Theme.EscapeLauncher.Splash"
-            android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTask"
-            android:excludeFromRecents="true"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode|navigation">
+            android:name=".OnboardingActivity"
+            android:theme="@style/Theme.EscapeLauncher"
+            android:exported="false" />
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <activity
+            android:name="com.geecee.escapelauncher.feature.settings.SettingsActivity"
+            android:theme="@style/Theme.EscapeLauncher"
+            android:label="Sareprne"
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".GlassmorphicReminderActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:exported="false" />
+
+        <activity
+            android:name=".IconPackActivity"
+            android:label="Escape Icon Pack"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+            <!-- Icon Pack support -->
+            <intent-filter>
+                <action android:name="com.novalauncher.THEME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.adw.launcher.THEMES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.dlto.atom.launcher.THEME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.fede.launcher.THEME_ICONPACK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.sec.android.app.launcher.THEME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
 
         <activity
             android:name="com.geecee.escapelauncher.feature.newwidgets.ConfigureWidgetActivity"
@@ -82,14 +135,14 @@
         </service>
 
         <service
-            android:name=".core.common.EscapeAccessibilityService"
+            android:name=".EscapeAccessibilityService"
+            android:label="Escape Accessibility"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false"
             tools:ignore="AccessibilityPolicy">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
-
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
@@ -104,5 +157,42 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <!-- Khoj Search Components -->
+        <activity
+            android:name="com.geecee.escapelauncher.feature.widgets.KhojSearchActivity"
+            android:theme="@style/Theme.EscapeLauncher.Transparent"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:exported="true"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
+
+        <receiver
+            android:name="com.geecee.escapelauncher.feature.widgets.KhojWidgetProvider"
+            android:label="Khoj"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/khoj_widget_info" />
+        </receiver>
+
+        <service
+            android:name="com.geecee.escapelauncher.feature.widgets.KhojTileService"
+            android:icon="@drawable/ic_khoj_road"
+            android:label="Khoj"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name="com.geecee.escapelauncher.feature.settings.IconPackSettingsActivity"
+            android:theme="@style/Theme.EscapeLauncher.Transparent"
+            android:exported="false" />
+
     </application>
 </manifest>

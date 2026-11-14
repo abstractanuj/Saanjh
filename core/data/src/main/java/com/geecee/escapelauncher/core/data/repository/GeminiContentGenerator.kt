@@ -1,9 +1,7 @@
 package com.geecee.escapelauncher.core.data.repository
 
-import com.geecee.escapelauncher.core.data.database.CuriosityDao
 import com.geecee.escapelauncher.core.data.database.MusicDao
 import com.geecee.escapelauncher.core.data.entity.ContentMetadataEntity
-import com.geecee.escapelauncher.core.data.entity.CuriosityQuestionEntity
 import com.geecee.escapelauncher.core.data.entity.MusicRecommendationEntity
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,30 +15,11 @@ import javax.inject.Singleton
 @Singleton
 class GeminiContentGenerator @Inject constructor(
     private val httpClient: OkHttpClient,
-    private val curiosityDao: CuriosityDao,
     private val musicDao: MusicDao
 ) {
     private val apiKey = "AIzaSyCPb3am7EyyuuzpDLbwn1kUWGRgrxO9a-k"
     private val apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey"
     private val gson = Gson()
-
-    suspend fun generateQuestionsIfNeeded() {
-        val metadata = curiosityDao.getMetadata()
-        val threeDaysInMillis = 3 * 24 * 60 * 60 * 1000L
-        if (metadata == null || System.currentTimeMillis() - metadata.lastGeneratedAt > threeDaysInMillis) {
-
-            val questions = fetchQuestionsFromGemini()
-            if (questions.isNotEmpty()) {
-                curiosityDao.insertQuestions(questions.map { CuriosityQuestionEntity(text = it) })
-                curiosityDao.updateMetadata(ContentMetadataEntity("questions", System.currentTimeMillis()))
-
-            } else if (metadata == null) {
-                Timber.w("Gemini fetch failed, priming with local questions.")
-                curiosityDao.insertQuestions(LocalContent.curiosityQuestions.shuffled().take(50).map { CuriosityQuestionEntity(text = it) })
-                curiosityDao.updateMetadata(ContentMetadataEntity("questions", System.currentTimeMillis()))
-            }
-        }
-    }
 
     suspend fun generateMusicIfNeeded() {
         val metadata = musicDao.getMetadata()
@@ -60,21 +39,9 @@ class GeminiContentGenerator @Inject constructor(
         }
     }
 
-    private suspend fun fetchQuestionsFromGemini(): List<String> {
-        val prompt = """
-            Generate 30 unique and child-like curiosity questions that an inquisitive child would ask. 
-            Topics: space, nature, animals, existence, how things work.
-            Example: "why is the sky blue?", "do fish drink water?", "what is behind the stars?".
-            Return ONLY a valid JSON array of strings. No markdown, no extra text.
-        """.trimIndent()
-        return fetchListFromGemini(prompt)
-    }
-
     private suspend fun fetchMusicFromGemini(): List<String> {
         val prompt = """
-            Generate 10 unique classical music recommendations. 
-            Format: "Title - Composer".
-            Example: "Moonlight Sonata - Beethoven", "The Four Seasons - Vivaldi".
+            Generate 5 deep, multidisciplinary insights on cognitive development, covering history, economics, language, and philosophy (German, Japanese, Hinduism, Stoicism, Aristotle, Darwin). Focus on ideas of great leaders and visionaries. Elaborate on the cause and effect of a major past event, the reasoning behind the decision, and its impact then and now (include specific numbers/metrics where applicable). Connect this to geopolitics, trade, business, stocks, wars, or economies. Keep it profound but accessible, optimized for spaced repetition (ideas worth revisiting every two months). Format each insight as a short, impactful paragraph.
             Return ONLY a valid JSON array of strings. No markdown, no extra text.
         """.trimIndent()
         return fetchListFromGemini(prompt)

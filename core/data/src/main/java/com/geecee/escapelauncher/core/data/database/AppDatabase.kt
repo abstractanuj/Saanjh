@@ -4,7 +4,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.geecee.escapelauncher.core.data.entity.CalendarNoteEntity
 import com.geecee.escapelauncher.core.data.entity.ContactEntity
-import com.geecee.escapelauncher.core.data.entity.CuriosityQuestionEntity
 import com.geecee.escapelauncher.core.data.entity.MusicRecommendationEntity
 import com.geecee.escapelauncher.core.data.entity.ContentMetadataEntity
 import com.geecee.escapelauncher.core.data.entity.NewsArticleEntity
@@ -15,7 +14,6 @@ import com.geecee.escapelauncher.core.data.entity.TodaysPickVideoEntity
     entities = [
         CalendarNoteEntity::class,
         ContactEntity::class,
-        CuriosityQuestionEntity::class,
         MusicRecommendationEntity::class,
         ContentMetadataEntity::class,
         NewsArticleEntity::class,
@@ -28,7 +26,6 @@ import com.geecee.escapelauncher.core.data.entity.TodaysPickVideoEntity
 abstract class AppDatabase : RoomDatabase() {
     abstract fun calendarNoteDao(): CalendarNoteDao
     abstract fun contactDao(): ContactDao
-    abstract fun curiosityDao(): CuriosityDao
     abstract fun musicDao(): MusicDao
     abstract fun newsDao(): NewsDao
     abstract fun todaysPicksDao(): TodaysPicksDao

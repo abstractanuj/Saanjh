@@ -4,6 +4,7 @@ import com.geecee.escapelauncher.core.data.database.ModifiedAppsDao
 import com.geecee.escapelauncher.core.data.entity.ModifiedAppEntity
 import com.geecee.escapelauncher.core.model.InstalledApp
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,13 +15,10 @@ class ModifiedAppsRepositoryImpl @Inject constructor(
     private val geminiCategorizer: GeminiCategorizer
 ) : ModifiedAppsRepository {
     override fun getHiddenPackageIdsFlow(): Flow<List<String>> =
-        modifiedAppsDao.getHiddenPackageIdsFlow()
+        modifiedAppsDao.getHiddenPackageIdsFlow().distinctUntilChanged()
 
     override fun getChallengePackageIdsFlow(): Flow<List<String>> =
-        modifiedAppsDao.getChallengePackageIdsFlow()
-
-    override fun getFavouriteAppsInOrderFlow(): Flow<List<ModifiedAppEntity>> =
-        modifiedAppsDao.getFavouriteAppsInOrderFlow()
+        modifiedAppsDao.getChallengePackageIdsFlow().distinctUntilChanged()
 
     override fun getCategoriesMapFlow(): Flow<Map<String, String>> =
         modifiedAppsDao.getCategoriesMapFlow().map { list ->

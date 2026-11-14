@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.geecee.escapelauncher.core.model.InstalledApp
@@ -62,7 +63,16 @@ class PrivateSpaceViewModel @Inject constructor(
                 addAction(Intent.ACTION_PROFILE_AVAILABLE)
                 addAction(Intent.ACTION_PROFILE_UNAVAILABLE)
             }
-            context.registerReceiver(privateSpaceReceiver, intentFilter)
+            try {
+                ContextCompat.registerReceiver(
+                    context,
+                    privateSpaceReceiver!!,
+                    intentFilter,
+                    ContextCompat.RECEIVER_NOT_EXPORTED
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

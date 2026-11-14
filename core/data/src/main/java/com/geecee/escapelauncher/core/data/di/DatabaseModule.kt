@@ -41,11 +41,6 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideCuriosityDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.CuriosityDao {
-        return database.curiosityDao()
-    }
-
-    @Provides
     fun provideMusicDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.MusicDao {
         return database.musicDao()
     }

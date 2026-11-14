@@ -48,7 +48,8 @@ interface SettingsRepository {
     suspend fun setAllowAnalytics(value: Boolean)
     val doubleTapToLock: Flow<Boolean>
     suspend fun setDoubleTapToLock(enabled: Boolean)
-    
+    val iconPackPackage: Flow<String?>
+    suspend fun setIconPackPackage(pkg: String?)
     val showLauncherSwitcherNotification: Flow<Boolean>
     suspend fun setShowLauncherSwitcherNotification(enabled: Boolean)
     val showSearchBox: Flow<Boolean>
@@ -81,6 +82,18 @@ interface SettingsRepository {
     suspend fun setPeoplePageBackgroundUri(uri: String?)
     val customYoutubeChannels: Flow<List<YoutubeChannel>>
     suspend fun setCustomYoutubeChannels(channels: List<YoutubeChannel>)
+
+    val routineAppsMorning: Flow<Set<String>>
+    suspend fun setRoutineAppsMorning(apps: Set<String>)
+
+    val routineAppsAfternoon: Flow<Set<String>>
+    suspend fun setRoutineAppsAfternoon(apps: Set<String>)
+
+    val routineAppsEvening: Flow<Set<String>>
+    suspend fun setRoutineAppsEvening(apps: Set<String>)
+
+    val routineAppsNight: Flow<Set<String>>
+    suspend fun setRoutineAppsNight(apps: Set<String>)
 
     suspend fun updateSettings(settings: SettingsData)
 }

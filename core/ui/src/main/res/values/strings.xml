@@ -159,4 +159,11 @@
     <string name="enable_secure_folder_on_settings">Enable the Secure Folder in settings</string>
     <string name="double_tap_for_progress">DOUBLE TAP FOR PROGRESS</string>
     <string name="double_tap_for_search">DOUBLE TAP FOR SEARCH</string>
+    <string name="khoj_widget_crashed" translatable="false">Widget crashed</string>
+    <string name="khoj_widget_description" translatable="false">Khoj Search Widget</string>
+    <string name="error_cannot_launch_app" translatable="false">Cannot launch app: Permission denied or profile locked</string>
+    <string name="error_app_not_found" translatable="false">App not found</string>
+    <string name="error_cannot_open_dialer" translatable="false">Cannot open dialer</string>
+    <string name="error_cannot_open_whatsapp" translatable="false">Cannot open WhatsApp</string>
+    <string name="serene_service_description" translatable="false">Escape Launcher requires this service to detect when you open specific apps in order to apply a calming, serene overlay to them.</string>
 </resources>
