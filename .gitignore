@@ -33,3 +33,10 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+*.jks
+*.keystore
+
+/app/foss/release/
+*.jks
+*.keystore
