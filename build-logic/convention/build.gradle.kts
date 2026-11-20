@@ -63,9 +63,5 @@ gradlePlugin {
             id = libs.plugins.escapelauncher.android.feature.get().pluginId
             implementationClass = "com.geecee.escapelauncher.AndroidFeatureConventionPlugin"
         }
-        register("androidGoogle") {
-            id = libs.plugins.escapelauncher.android.google.get().pluginId
-            implementationClass = "com.geecee.escapelauncher.AndroidGoogleConventionPlugin"
-        }
     }
 }

@@ -12,5 +12,4 @@ dependencies {
     implementation(libs.timber)
 
     implementation(project(":core:model"))
-    implementation(project(":core:analytics"))
 }

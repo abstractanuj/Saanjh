@@ -1,9 +1,0 @@
-- [ ] Navigation Hygiene & Swipe Guard
-    - [/] Refine `verticalScrollEnabled` in `MainPagerScreen.kt`
-    - [ ] Implement Horizontal vs Vertical swipe lock
-- [ ] Micro-Interactions in `Home.kt`
-    - [ ] "Settings Hold" haptic pulses and scaling
-    - [ ] Horizontal Pager parallax/fade transitions
-    - [ ] Haptic page snap feedback
-- [ ] Visual Polish in `ContactsScreen.kt`
-    - [ ] Spring scale animation for tiles

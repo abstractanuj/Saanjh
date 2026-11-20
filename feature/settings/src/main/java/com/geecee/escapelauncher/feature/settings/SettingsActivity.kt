@@ -2,31 +2,41 @@ package com.geecee.escapelauncher.feature.settings
 
 import android.app.StatusBarManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.geecee.escapelauncher.core.data.repository.LocalContent
+import com.geecee.escapelauncher.core.data.repository.PeopleRepository
 import com.geecee.escapelauncher.core.data.repository.WidgetSettingsRepository
-import com.geecee.escapelauncher.core.model.SettingsData
-import com.geecee.escapelauncher.core.ui.composables.SettingsGroup
 import com.geecee.escapelauncher.core.ui.composables.SettingsDivider
+import com.geecee.escapelauncher.core.ui.composables.SettingsGroup
 import com.geecee.escapelauncher.core.ui.composables.SettingsNavigationItem
 import com.geecee.escapelauncher.core.ui.composables.SettingsSwitch
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,26 +49,20 @@ class SettingsActivity : ComponentActivity() {
     @Inject
     lateinit var widgetSettingsRepository: WidgetSettingsRepository
 
+    @Inject
+    lateinit var peopleRepository: PeopleRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        
-        val sharedPrefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
-        val isOnboardingComplete = sharedPrefs.getBoolean("isOnboardingComplete", false)
-        
-        if (!isOnboardingComplete) {
-            val intent = Intent().apply {
-                setClassName(this@SettingsActivity, "com.geecee.escapelauncher.OnboardingActivity")
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-            startActivity(intent)
-            finish()
-            return
-        }
 
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    SettingsScreen(widgetSettingsRepository)
+                    SettingsScreen(
+                        widgetSettingsRepository = widgetSettingsRepository,
+                        peopleRepository = peopleRepository
+                    )
                 }
             }
         }
@@ -69,17 +73,19 @@ class SettingsActivity : ComponentActivity() {
 @Composable
 fun SettingsScreen(
     widgetSettingsRepository: WidgetSettingsRepository,
-    viewModel: SettingsActivityViewModel = hiltViewModel()
+    peopleRepository: PeopleRepository
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val useDarkText by widgetSettingsRepository.useDarkText.collectAsState(initial = false)
-    val settingsData by viewModel.settings.collectAsState(initial = SettingsData())
+    var awarenessNudgeEnabled by remember {
+        mutableStateOf(peopleRepository.isAwarenessNudgeEnabled())
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Escape Settings") },
+                title = { Text("saanjh") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
@@ -93,22 +99,62 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 0.dp, vertical = 8.dp),
+                .padding(vertical = 8.dp)
         ) {
-            
-            SettingsGroup(title = "Customization") {
+            SettingsGroup(title = "Customization, Settings & Setup") {
+                SettingsNavigationItem(
+                    label = "People (2+ Weeks & Favorite Contacts)",
+                    onClick = {
+                        context.startActivity(Intent(context, FavoriteContactsActivity::class.java))
+                    }
+                )
+                SettingsDivider()
+                SettingsNavigationItem(
+                    label = "Configure Gestures (Apps & Contacts)",
+                    onClick = {
+                        val intent = Intent("com.geecee.escapelauncher.action.GESTURE_SETUP").apply {
+                            setPackage(context.packageName)
+                        }
+                        context.startActivity(intent)
+                    }
+                )
+                SettingsDivider()
+                SettingsSwitch(
+                    label = "Awareness Nudge",
+                    description = "Periodic 6-second top pill with a short grounding prompt",
+                    checked = awarenessNudgeEnabled,
+                    onCheckedChange = { checked ->
+                        awarenessNudgeEnabled = checked
+                        peopleRepository.setAwarenessNudgeEnabled(checked)
+                    }
+                )
+                SettingsDivider()
+                SettingsNavigationItem(
+                    label = "Show Awareness Nudge Now",
+                    onClick = {
+                        val intent = Intent("com.sareprne.saanjh.action.AWARENESS_NUDGE").apply {
+                            setPackage(context.packageName)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                        }
+                        context.startActivity(intent)
+                    }
+                )
+                SettingsDivider()
                 SettingsNavigationItem(
                     label = "Icon Pack",
                     onClick = {
                         context.startActivity(Intent(context, IconPackSettingsActivity::class.java))
                     }
                 )
+                SettingsDivider()
                 SettingsNavigationItem(
                     label = "Set as Default Launcher",
                     onClick = {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             val rm = context.getSystemService(android.app.role.RoleManager::class.java)
-                            if (rm?.isRoleAvailable(android.app.role.RoleManager.ROLE_HOME) == true && !rm.isRoleHeld(android.app.role.RoleManager.ROLE_HOME)) {
+                            if (rm?.isRoleAvailable(android.app.role.RoleManager.ROLE_HOME) == true &&
+                                !rm.isRoleHeld(android.app.role.RoleManager.ROLE_HOME)
+                            ) {
                                 val intent = rm.createRequestRoleIntent(android.app.role.RoleManager.ROLE_HOME)
                                 context.startActivity(intent)
                                 return@SettingsNavigationItem
@@ -128,16 +174,6 @@ fun SettingsScreen(
                         }
                     }
                 )
-                SettingsDivider()
-                SettingsNavigationItem(
-                    label = "Configure Gestures",
-                    onClick = {
-                        val intent = Intent("com.geecee.escapelauncher.action.GESTURE_SETUP").apply {
-                            setPackage(context.packageName)
-                        }
-                        context.startActivity(intent)
-                    }
-                )
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     SettingsDivider()
                     SettingsNavigationItem(
@@ -150,68 +186,18 @@ fun SettingsScreen(
                                     "com.geecee.escapelauncher.feature.gestures.GestureTileService"
                                 ),
                                 "Gesture Pad",
-                                android.graphics.drawable.Icon.createWithResource(context, android.R.drawable.ic_menu_edit),
+                                android.graphics.drawable.Icon.createWithResource(
+                                    context,
+                                    android.R.drawable.ic_menu_edit
+                                ),
                                 { it.run() },
-                                { result ->
-                                    // Optional callback handling
-                                }
+                                {}
                             )
                         }
                     )
                 }
             }
 
-            SettingsGroup(title = "Glassmorphic Reminders") {
-                SettingsNavigationItem(
-                    label = "Frequency (Current: ${settingsData.reminderFrequencyHours} hours)",
-                    onClick = {
-                        val newFreq = if (settingsData.reminderFrequencyHours < 12) settingsData.reminderFrequencyHours + 1 else 1
-                        viewModel.updateReminderFrequency(newFreq)
-                    }
-                )
-                SettingsDivider()
-                SettingsNavigationItem(
-                    label = "Time Window (${settingsData.reminderStartTime} - ${settingsData.reminderEndTime})",
-                    onClick = {
-                        if (settingsData.reminderStartTime == "08:00") {
-                            viewModel.updateReminderTimeWindow("00:00", "23:59")
-                        } else {
-                            viewModel.updateReminderTimeWindow("08:00", "22:00")
-                        }
-                    }
-                )
-                SettingsDivider()
-                SettingsNavigationItem(
-                    label = "Preview Reminder",
-                    onClick = {
-                        val quote = LocalContent.inspirationalQuotes.random()
-                        val intent = Intent().apply {
-                            setClassName(context, "com.geecee.escapelauncher.GlassmorphicReminderActivity")
-                            putExtra("REMINDER_TEXT", quote)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                        context.startActivity(intent)
-                    }
-                )
-            }
-
-            SettingsGroup(title = "Recommendations") {
-                SettingsNavigationItem(
-                    label = "Recommendation Frequency (${settingsData.recommendationFrequencyHours} hours)",
-                    onClick = {
-                        val newFreq = if (settingsData.recommendationFrequencyHours < 48) settingsData.recommendationFrequencyHours + 6 else 6
-                        viewModel.updateRecommendationFrequency(newFreq)
-                    }
-                )
-                SettingsDivider()
-                SettingsNavigationItem(
-                    label = "Preview Recommendations",
-                    onClick = {
-                        com.geecee.escapelauncher.core.data.worker.RecommendationWorker.showRecommendationPreview(context)
-                    }
-                )
-            }
-            
             Spacer(modifier = Modifier.height(32.dp))
         }
     }

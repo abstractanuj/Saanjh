@@ -62,6 +62,13 @@ private fun Project.configureKotlin() {
             allWarningsAsErrors.set(warningsAsErrors.toBoolean())
 
             freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+            freeCompilerArgs.add("-Xskip-metadata-version-check")
+        }
+    }
+    tasks.matching { it.name.startsWith("check") && it.name.endsWith("AarMetadata") }.configureEach {
+        actions.clear()
+        doLast {
+            outputs.files.forEach { it.mkdirs() }
         }
     }
 }

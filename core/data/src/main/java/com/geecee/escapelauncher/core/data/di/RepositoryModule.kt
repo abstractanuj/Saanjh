@@ -8,7 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Suppress("unused") // It is used by the generated build code.
+@Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
@@ -17,10 +17,4 @@ abstract class RepositoryModule {
     abstract fun bindModifiedAppsRepository(
         modifiedAppsRepositoryImpl: ModifiedAppsRepositoryImpl
     ): ModifiedAppsRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindTodaysPicksRepository(
-        impl: com.geecee.escapelauncher.core.data.repository.TodaysPicksRepositoryImpl
-    ): com.geecee.escapelauncher.core.domain.repository.TodaysPicksRepository
 }

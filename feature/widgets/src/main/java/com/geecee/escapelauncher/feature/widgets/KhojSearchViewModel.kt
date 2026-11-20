@@ -1,12 +1,10 @@
 package com.geecee.escapelauncher.feature.widgets
 
-import android.content.Context
-import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.util.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.geecee.escapelauncher.core.common.fuzzyMatch
+import com.geecee.escapelauncher.core.common.sortAppsByRelevance
 import com.geecee.escapelauncher.core.data.repository.AppsRepository
 import com.geecee.escapelauncher.core.data.repository.ContactsRepository
 import com.geecee.escapelauncher.core.model.ContactData
@@ -14,6 +12,7 @@ import com.geecee.escapelauncher.core.model.InstalledApp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,12 +20,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
-
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -52,7 +49,7 @@ class KhojSearchViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-    
+
     val iconPackReady = appsRepository.iconPackManager.iconPackReady.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -62,26 +59,24 @@ class KhojSearchViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     val filteredApps: StateFlow<List<InstalledApp>> = combine(
         appsRepository.installedApps,
-        _searchQuery.debounce(250.milliseconds)
+        _searchQuery.debounce(80.milliseconds)
     ) { apps, query ->
         if (query.isBlank()) {
             emptyList()
         } else {
-            apps.filter { app ->
-                fuzzyMatch(app.displayName, query)
-            }.sortedBy { it.displayName }.take(12)
+            sortAppsByRelevance(apps, query).take(12)
         }
     }
-    .flowOn(Dispatchers.Default)
-    .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+        .flowOn(Dispatchers.Default)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     @OptIn(FlowPreview::class)
     val filteredContacts: StateFlow<List<ContactData>> = _searchQuery
-        .debounce(250.milliseconds)
+        .debounce(80.milliseconds)
         .mapLatest { query ->
             if (query.isBlank()) emptyList() else contactsRepository.searchContacts(query).take(10)
         }

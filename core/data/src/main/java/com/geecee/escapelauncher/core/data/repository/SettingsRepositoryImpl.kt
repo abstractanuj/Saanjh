@@ -4,31 +4,24 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.geecee.escapelauncher.core.data.datastore.PreferencesKeys
-import com.geecee.escapelauncher.core.model.SettingsData
-import com.geecee.escapelauncher.core.model.YoutubeChannel
+import com.geecee.escapelauncher.core.di.ApplicationScope
 import com.geecee.escapelauncher.core.domain.repository.SettingsRepository
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.geecee.escapelauncher.core.model.SettingsData
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
-import com.geecee.escapelauncher.core.di.ApplicationScope
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-    private val gson: Gson,
-    @ApplicationScope private val scope: CoroutineScope
+    @param:ApplicationScope private val scope: CoroutineScope
 ) : SettingsRepository {
-
-    private val youtubeChannelListType = object : TypeToken<List<YoutubeChannel>>() {}.type
 
     override val settings: Flow<SettingsData> = dataStore.data.map { preferences ->
         SettingsData(
@@ -38,9 +31,9 @@ class SettingsRepositoryImpl @Inject constructor(
             bigClock = preferences[PreferencesKeys.BIG_CLOCK] ?: false,
             showDate = preferences[PreferencesKeys.SHOW_DATE] ?: false,
             showGlassmorphicReminders = preferences[PreferencesKeys.SHOW_GLASSMORPHIC_REMINDERS] ?: true,
-            reminderFrequencyHours = preferences[PreferencesKeys.REMINDER_FREQUENCY_HOURS] ?: 1,
-            reminderStartTime = preferences[PreferencesKeys.REMINDER_START_TIME] ?: "08:00",
-            reminderEndTime = preferences[PreferencesKeys.REMINDER_END_TIME] ?: "22:00",
+            reminderFrequencyHours = preferences[PreferencesKeys.REMINDER_FREQUENCY_HOURS] ?: 6,
+            reminderStartTime = preferences[PreferencesKeys.REMINDER_START_TIME] ?: "15:00",
+            reminderEndTime = preferences[PreferencesKeys.REMINDER_END_TIME] ?: "22:30",
             homeAlignment = preferences[PreferencesKeys.HOME_ALIGNMENT] ?: "Center",
             homeVAlignment = preferences[PreferencesKeys.HOME_V_ALIGNMENT] ?: "Center",
             appsAlignment = preferences[PreferencesKeys.APPS_ALIGNMENT] ?: "Center",
@@ -71,17 +64,6 @@ class SettingsRepositoryImpl @Inject constructor(
             showLauncherSwitcherNotification = preferences[PreferencesKeys.SHOW_LAUNCHER_SWITCHER_NOTIFICATION] ?: false,
             enableNowPlaying = preferences[PreferencesKeys.ENABLE_NOW_PLAYING] ?: false,
             peoplePageBackgroundUri = preferences[PreferencesKeys.PEOPLE_PAGE_BACKGROUND_URI],
-            customYoutubeChannels = try {
-                val json = preferences[PreferencesKeys.CUSTOM_YOUTUBE_CHANNELS]
-                if (!json.isNullOrEmpty()) {
-                    gson.fromJson<List<YoutubeChannel>>(json, youtubeChannelListType)
-                } else {
-                    emptyList()
-                }
-            } catch (e: Exception) {
-                emptyList()
-            }
-            ,
             routineAppsMorning = preferences[PreferencesKeys.ROUTINE_APPS_MORNING] ?: emptySet(),
             routineAppsAfternoon = preferences[PreferencesKeys.ROUTINE_APPS_AFTERNOON] ?: emptySet(),
             routineAppsEvening = preferences[PreferencesKeys.ROUTINE_APPS_EVENING] ?: emptySet(),
@@ -95,7 +77,7 @@ class SettingsRepositoryImpl @Inject constructor(
             enableWhatIfRecommendations = preferences[PreferencesKeys.ENABLE_WHAT_IF_RECOMMENDATIONS] ?: true,
             enableForeignMoviesRecommendations = preferences[PreferencesKeys.ENABLE_FOREIGN_MOVIES_RECOMMENDATIONS] ?: true,
             recommendationFrequencyHours = preferences[PreferencesKeys.RECOMMENDATION_FREQUENCY_HOURS] ?: 24,
-            recommendationTime = preferences[PreferencesKeys.RECOMMENDATION_TIME] ?: "10:00",
+            recommendationTime = preferences[PreferencesKeys.RECOMMENDATION_TIME] ?: "18:30",
             enableSystemWallpaper = preferences[PreferencesKeys.ENABLE_SYSTEM_WALLPAPER] ?: false,
             iconPackPackage = preferences[PreferencesKeys.ICON_PACK_PACKAGE]
         )
@@ -195,12 +177,12 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setMaxQuickApps(value: Int) {
         dataStore.edit { preferences -> preferences[PreferencesKeys.MAX_QUICK_APPS] = value }
     }
-    
+
     override val iconPackPackage: Flow<String?>
         get() = settings.map { it.iconPackPackage }.distinctUntilChanged()
 
     override suspend fun setIconPackPackage(pkg: String?) {
-        dataStore.edit { preferences -> 
+        dataStore.edit { preferences ->
             if (pkg == null) preferences.remove(PreferencesKeys.ICON_PACK_PACKAGE)
             else preferences[PreferencesKeys.ICON_PACK_PACKAGE] = pkg
         }
@@ -261,10 +243,10 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setDoubleTapToLock(enabled: Boolean) {
         dataStore.edit { preferences -> preferences[PreferencesKeys.DOUBLE_TAP_TO_LOCK] = enabled }
     }
-    
+
     override val showLauncherSwitcherNotification: Flow<Boolean>
         get() = dataStore.data.map { preferences -> preferences[PreferencesKeys.SHOW_LAUNCHER_SWITCHER_NOTIFICATION] ?: false }.distinctUntilChanged()
-        
+
     override suspend fun setShowLauncherSwitcherNotification(enabled: Boolean) {
         dataStore.edit { preferences -> preferences[PreferencesKeys.SHOW_LAUNCHER_SWITCHER_NOTIFICATION] = enabled }
     }
@@ -366,15 +348,6 @@ class SettingsRepositoryImpl @Inject constructor(
         }
     }
 
-    override val customYoutubeChannels: Flow<List<YoutubeChannel>>
-        get() = settings.map { it.customYoutubeChannels }.distinctUntilChanged()
-
-    override suspend fun setCustomYoutubeChannels(channels: List<YoutubeChannel>) {
-        dataStore.edit { preferences ->
-            preferences[PreferencesKeys.CUSTOM_YOUTUBE_CHANNELS] = gson.toJson(channels)
-        }
-    }
-
     override val routineAppsMorning: Flow<Set<String>>
         get() = settings.map { it.routineAppsMorning }.distinctUntilChanged()
 
@@ -448,7 +421,6 @@ class SettingsRepositoryImpl @Inject constructor(
             } else {
                 preferences[PreferencesKeys.PEOPLE_PAGE_BACKGROUND_URI] = backgroundUri
             }
-            preferences[PreferencesKeys.CUSTOM_YOUTUBE_CHANNELS] = gson.toJson(settings.customYoutubeChannels)
             preferences[PreferencesKeys.ROUTINE_APPS_MORNING] = settings.routineAppsMorning
             preferences[PreferencesKeys.ROUTINE_APPS_AFTERNOON] = settings.routineAppsAfternoon
             preferences[PreferencesKeys.ROUTINE_APPS_EVENING] = settings.routineAppsEvening

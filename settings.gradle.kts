@@ -25,7 +25,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Escape Launcher"
+rootProject.name = "saanjh"
 includeBuild("build-logic")
 include(":app")
 include(":core:ui")
@@ -33,11 +33,8 @@ include(":core:model")
 include(":core:data")
 include(":core:domain")
 include(":core:common")
-include(":domain:time")
 include(":core:di")
 include(":core:theme")
-include(":core:analytics")
-include(":core:cloudmessaging")
 include(":feature:settings")
 include(":feature:gestures")
 include(":feature:widgets")

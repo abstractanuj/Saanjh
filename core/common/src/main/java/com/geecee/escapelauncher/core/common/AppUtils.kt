@@ -7,10 +7,8 @@ import android.content.pm.LauncherApps
 import android.graphics.Rect
 import android.os.Process
 import androidx.core.net.toUri
-import com.geecee.escapelauncher.core.analytics.analyticsProxy
 import com.geecee.escapelauncher.core.model.InstalledApp
-
-import java.text.Normalizer
+import com.geecee.escapelauncher.core.model.normalizeSearchText
 
 /**
  * Checks if the app belongs to the main user.
@@ -19,12 +17,6 @@ fun InstalledApp.isMainUserApp(): Boolean = this.user == Process.myUserHandle()
 
 /**
  * Function to launch an app.
- *
- * @param context Context
- * @param app The app info being opened
- * @param onAppOpened Callback called when the app is successfully opened for screen time tracking
- *
- * @return Boolean true if the app was launched successfully
  */
 fun launchApp(
     context: Context,
@@ -48,7 +40,6 @@ fun launchApp(
         launchViaIntentFallback(context, app, onAppOpened)
     } catch (e: Exception) {
         AppLogger.e("Error opening app", e, tag = "AppUtils")
-        recordAppLaunchError(app.packageName, e)
         false
     }
 }
@@ -70,36 +61,26 @@ private fun launchViaIntentFallback(
         }
     } catch (fallbackException: Exception) {
         AppLogger.e("Failed to launch app even with fallback", fallbackException, tag = "AppUtils")
-        recordAppLaunchError(app.packageName, fallbackException)
         false
     }
 }
 
-private fun recordAppLaunchError(packageName: String, exception: Exception) {
-    analyticsProxy.logCustomKey("app_launch_error", packageName)
-    analyticsProxy.recordException(exception)
-}
-
 /**
- * Sorts a list of apps by relevance to a search query.
+ * Filters and ranks apps by mathematical affinity score to [query].
  */
 fun sortAppsByRelevance(apps: List<InstalledApp>, query: String): List<InstalledApp> {
-    val regexUnaccent = "\\p{M}+"
-    val normalizedQuery = Normalizer.normalize(query, Normalizer.Form.NFD)
-        .replace(Regex(regexUnaccent), "")
-        .lowercase()
+    val normalizedQuery = normalizeSearchText(query.trim())
+    if (normalizedQuery.isEmpty()) return apps
 
-    return apps.sortedWith(compareBy<InstalledApp> { app ->
-        val normalizedName = Normalizer.normalize(app.displayName, Normalizer.Form.NFD)
-            .replace(Regex(regexUnaccent), "")
-            .lowercase()
-
-        when {
-            normalizedName.startsWith(normalizedQuery) -> 0
-            normalizedName.contains(normalizedQuery) -> 1
-            else -> 2
-        }
-    }.thenBy { it.displayName.lowercase() })
+    return apps.asSequence()
+        .map { app -> app to scoreInstalledApp(app, normalizedQuery) }
+        .filter { it.second >= 0 }
+        .sortedWith(
+            compareByDescending<Pair<InstalledApp, Int>> { it.second }
+                .thenBy { it.first.normalizedName }
+        )
+        .map { it.first }
+        .toList()
 }
 
 fun uninstallApp(context: Context, app: InstalledApp) {

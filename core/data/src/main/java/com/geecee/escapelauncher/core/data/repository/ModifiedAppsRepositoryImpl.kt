@@ -11,8 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ModifiedAppsRepositoryImpl @Inject constructor(
-    private val modifiedAppsDao: ModifiedAppsDao,
-    private val geminiCategorizer: GeminiCategorizer
+    private val modifiedAppsDao: ModifiedAppsDao
 ) : ModifiedAppsRepository {
     override fun getHiddenPackageIdsFlow(): Flow<List<String>> =
         modifiedAppsDao.getHiddenPackageIdsFlow().distinctUntilChanged()
@@ -28,12 +27,9 @@ class ModifiedAppsRepositoryImpl @Inject constructor(
     override suspend fun categorizeApps(apps: List<InstalledApp>) {
         val currentCategories = modifiedAppsDao.getCategoriesMap().associate { it.packageId to it.category }
         val appsToCategorize = apps.filter { !currentCategories.containsKey(it.packageName) }
-        
-        if (appsToCategorize.isNotEmpty()) {
-            val results = geminiCategorizer.categorizeApps(appsToCategorize)
-            results.forEach { (packageId, category) ->
-                modifiedAppsDao.setCategory(packageId, category)
-            }
+
+        for (app in appsToCategorize) {
+            modifiedAppsDao.setCategory(app.packageName, "Apps")
         }
     }
 

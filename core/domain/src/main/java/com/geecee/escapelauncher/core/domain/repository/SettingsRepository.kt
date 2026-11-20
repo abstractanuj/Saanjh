@@ -1,7 +1,6 @@
 package com.geecee.escapelauncher.core.domain.repository
 
 import com.geecee.escapelauncher.core.model.SettingsData
-import com.geecee.escapelauncher.core.model.YoutubeChannel
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
@@ -80,8 +79,6 @@ interface SettingsRepository {
     suspend fun setEnableNowPlaying(enabled: Boolean)
     val peoplePageBackgroundUri: Flow<String?>
     suspend fun setPeoplePageBackgroundUri(uri: String?)
-    val customYoutubeChannels: Flow<List<YoutubeChannel>>
-    suspend fun setCustomYoutubeChannels(channels: List<YoutubeChannel>)
 
     val routineAppsMorning: Flow<Set<String>>
     suspend fun setRoutineAppsMorning(apps: Set<String>)

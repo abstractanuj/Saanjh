@@ -14,7 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Suppress("unused") // It is used by the generated build code.
+@Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
@@ -23,18 +23,7 @@ abstract class DataModule {
         impl: SettingsRepositoryImpl
     ): SettingsRepository
 
-    @Binds
-    abstract fun bindRssParser(
-        impl: com.geecee.escapelauncher.core.data.network.SimpleRssParser
-    ): com.geecee.escapelauncher.core.data.network.RssParser
-
     companion object {
-        @Provides
-        @Singleton
-        fun provideMediaManager(
-            @ApplicationContext context: android.content.Context
-        ): com.geecee.escapelauncher.core.data.repository.MediaManager = com.geecee.escapelauncher.core.data.repository.MediaManager(context)
-
         @Provides
         @Singleton
         fun provideDataStore(

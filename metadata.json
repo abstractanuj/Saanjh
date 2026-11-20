@@ -1,0 +1,6 @@
+{
+  "name": "saanjh",
+  "description": "An offline, human-first mindful Android launcher with heuristic neuroplasticity training, atomic cloud search, draw-to-open gestures, and curated cinema/music.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

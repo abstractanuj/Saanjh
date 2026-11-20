@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.escapelauncher.android.hilt)
     alias(libs.plugins.escapelauncher.android.testing)
     alias(libs.plugins.escapelauncher.android.room)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 val baseVersionCode = "3.0"
@@ -14,7 +13,7 @@ android {
     namespace = "com.geecee.escapelauncher"
 
     defaultConfig {
-        applicationId = "com.geecee.escapelauncher"
+        applicationId = "com.sareprne.saanjh"
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 3
         versionName = baseVersionCode
@@ -24,32 +23,39 @@ android {
         }
 
         resValue("string", "app_version", baseVersionCode)
-        resValue("string", "app_name", "Sareprne")
-        resValue("string", "app_flavour", "Unknown Flavor")
+        resValue("string", "app_name", "saanjh")
+        resValue("string", "app_flavour", "FOSS")
 
         buildConfigField("String", "APP_VERSION", "\"$baseVersionCode\"")
-        buildConfigField("String", "APP_NAME", "\"Sareprne\"")
-        buildConfigField("String", "APP_FLAVOUR", "\"Unknown Flavor\"")
+        buildConfigField("String", "APP_NAME", "\"saanjh\"")
+        buildConfigField("String", "APP_FLAVOUR", "\"FOSS\"")
     }
+
     signingConfigs {
+        create("debugConfig") {
+            storeFile = file("${rootDir}/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
         create("release") {
-            storeFile = rootProject.file("release.keystore")
-            storePassword = "escape123"
-            keyAlias = "escape"
-            keyPassword = "escape123"
+            val releaseKeystore = rootProject.file("release.keystore")
+            storeFile = if (releaseKeystore.exists()) releaseKeystore else file("${rootDir}/debug.keystore")
+            storePassword = if (releaseKeystore.exists()) "escape123" else "android"
+            keyAlias = if (releaseKeystore.exists()) "escape" else "androiddebugkey"
+            keyPassword = if (releaseKeystore.exists()) "escape123" else "android"
         }
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
-            resValue("string", "app_name", "Sareprne Dev")
-            buildConfigField("String", "APP_NAME", "\"Sareprne Dev\"")
+            signingConfig = signingConfigs.getByName("debugConfig")
+            resValue("string", "app_name", "saanjh")
+            buildConfigField("String", "APP_NAME", "\"saanjh\"")
         }
         release {
             signingConfig = signingConfigs.getByName("release")
-            resValue("string", "app_name", "Sareprne")
+            resValue("string", "app_name", "saanjh")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -61,6 +67,7 @@ android {
 
     buildFeatures {
         resValues = true
+        buildConfig = true
     }
 
     packaging {
@@ -73,26 +80,11 @@ android {
 dependencies {
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.compose.ui)
-    implementation(libs.bundles.navigation3)
     implementation(libs.bundles.hilt)
     implementation(libs.timber)
 
-    // WorkManager
-    implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.androidx.hilt.work)
-    ksp(libs.androidx.hilt.compiler)
-    
     // Performance
     implementation(libs.androidx.profileinstaller)
-
-    // JSON Parsing
-    implementation(libs.gson)
-
-    // Testing Libraries
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-
-    // Debugging Tools
-    debugImplementation(libs.androidx.ui.test.manifest)
 
     // Modules
     implementation(project(":core:data"))
@@ -101,8 +93,6 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
     implementation(project(":core:theme"))
-    implementation(project(":core:analytics"))
-    implementation(project(":core:cloudmessaging"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:gestures"))
     implementation(project(":feature:widgets"))

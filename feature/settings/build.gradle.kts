@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.escapelauncher.android.feature)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -15,12 +14,6 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:theme"))
 
-    implementation(libs.androidx.navigation3.runtime)
-    implementation(libs.androidx.navigation3.ui)
-    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-    implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.coil.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 }

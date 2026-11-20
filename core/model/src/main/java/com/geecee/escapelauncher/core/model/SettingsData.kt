@@ -1,20 +1,17 @@
 package com.geecee.escapelauncher.core.model
 
 /**
- * Main data model for all user settings.
- *
- * Senior Dev Note: This class is kept flat for easier DataStore mapping and to avoid
- * breaking existing call sites, but is logically grouped using regions.
+ * Main data model for all user settings in Saanjh.
  */
 data class SettingsData(
-    // region Display Settings
+    // region Display & Reminder Settings
     val twelveHourClock: Boolean = false,
     val bigClock: Boolean = false,
     val showDate: Boolean = false,
     val showGlassmorphicReminders: Boolean = true,
-    val reminderFrequencyHours: Int = 1,
-    val reminderStartTime: String = "08:00",
-    val reminderEndTime: String = "22:00",
+    val reminderFrequencyHours: Int = 6,
+    val reminderStartTime: String = "15:00", // Afternoon exact reminder time
+    val reminderEndTime: String = "22:30",   // Before-bed exact reminder time
     val homeAlignment: String = "Center",
     val homeVAlignment: String = "Center",
     val appsAlignment: String = "Center",
@@ -44,7 +41,7 @@ data class SettingsData(
     val enableWhatIfRecommendations: Boolean = true,
     val enableForeignMoviesRecommendations: Boolean = true,
     val recommendationFrequencyHours: Int = 24,
-    val recommendationTime: String = "10:00",
+    val recommendationTime: String = "18:30",
     // endregion
 
     // region Theme Settings
@@ -73,19 +70,17 @@ data class SettingsData(
     val routineAppsNight: Set<String> = emptySet(),
     // endregion
 
-    // region Experimental & Others
+    // region Widget & Onboarding
     val widgetOffset: Float = 0f,
     val widgetHeight: Float = 125f,
     val widgetWidth: Float = 250f,
     val widgetId: Int = -1,
-    val customYoutubeChannels: List<YoutubeChannel> = emptyList(),
     val firstTimeHelp: Boolean = true,
     val firstTime: Boolean = true,
     val isOnDefaultLauncherOnboarding: Boolean = false
     // endregion
 ) {
     init {
-        // Guards to ensure valid state
         require(maxQuickApps in 1..10) { "maxQuickApps must be between 1 and 10 (value: $maxQuickApps)" }
         require(widgetHeight >= 0) { "widgetHeight cannot be negative (value: $widgetHeight)" }
         require(widgetWidth >= 0) { "widgetWidth cannot be negative (value: $widgetWidth)" }

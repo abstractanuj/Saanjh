@@ -3,6 +3,7 @@ package com.geecee.escapelauncher.core.data.di
 import android.content.Context
 import androidx.room.Room
 import com.geecee.escapelauncher.core.data.database.AppDatabase
+import com.geecee.escapelauncher.core.data.database.ContactDao
 import com.geecee.escapelauncher.core.data.database.ModifiedAppsDao
 import com.geecee.escapelauncher.core.data.database.ModifiedAppsDatabase
 import dagger.Module
@@ -25,35 +26,12 @@ object DatabaseModule {
             AppDatabase::class.java,
             "app_usage_database"
         )
-        .fallbackToDestructiveMigration(true) // Version 1 -> 2 with TodoEntity
-        .build()
-    }
-
-
-    @Provides
-    fun provideCalendarNoteDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.CalendarNoteDao {
-        return database.calendarNoteDao()
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
 
     @Provides
-    fun provideContactDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.ContactDao {
-        return database.contactDao()
-    }
-
-    @Provides
-    fun provideMusicDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.MusicDao {
-        return database.musicDao()
-    }
-
-    @Provides
-    fun provideNewsDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.NewsDao {
-        return database.newsDao()
-    }
-
-    @Provides
-    fun provideTodaysPicksDao(database: AppDatabase): com.geecee.escapelauncher.core.data.database.TodaysPicksDao {
-        return database.todaysPicksDao()
-    }
+    fun provideContactDao(database: AppDatabase): ContactDao = database.contactDao()
 
     @Provides
     @Singleton
@@ -65,12 +43,10 @@ object DatabaseModule {
             klass = ModifiedAppsDatabase::class.java,
             "modified_apps_database"
         )
-        .fallbackToDestructiveMigration(true)
-        .build()
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
 
     @Provides
-    fun provideModifiedAppsDao(database: ModifiedAppsDatabase): ModifiedAppsDao {
-        return database.modifiedAppsDao()
-    }
+    fun provideModifiedAppsDao(database: ModifiedAppsDatabase): ModifiedAppsDao = database.modifiedAppsDao()
 }

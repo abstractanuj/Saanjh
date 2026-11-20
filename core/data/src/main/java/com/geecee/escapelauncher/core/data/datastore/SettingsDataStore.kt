@@ -100,15 +100,12 @@ private class SharedPreferencesToDataStoreMigration(
         migrateBoolean("ShowHiddenAppsInSearch", PreferencesKeys.SHOW_HIDDEN_APPS_IN_SEARCH)
         migrateBoolean("bottomSearch", PreferencesKeys.BOTTOM_SEARCH)
         migrateBoolean("AppsListAutoSearch", PreferencesKeys.AUTOMATICALLY_OPEN_APPS_IN_SEARCH)
-        migrateString("weather_app_package", PreferencesKeys.WEATHER_APP_PACKAGE)
         migrateBoolean("DoubleTapToLock", PreferencesKeys.DOUBLE_TAP_TO_LOCK)
-        migrateBoolean("UseFahrenheit", PreferencesKeys.USE_FAHRENHEIT)
         migrateFloat("widget_offset", PreferencesKeys.WIDGET_OFFSET)
         migrateFloat("widget_height", PreferencesKeys.WIDGET_HEIGHT)
         migrateFloat("widget_width", PreferencesKeys.WIDGET_WIDTH)
         migrateInt("widget_ID", PreferencesKeys.WIDGET_ID)
         migrateBoolean("haptic_feedback", PreferencesKeys.HAPTIC_FEEDBACK)
-        migrateBoolean("show_weather", PreferencesKeys.SHOW_WEATHER)
 
         // 3. Migrate app lists to Room database
         try {
